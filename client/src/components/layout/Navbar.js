@@ -8,9 +8,9 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
   const authLinks = (
     <ul>
       <li>
-        <Link to='/dashboard'>
-          <i className='fas fa-user' />{' '}
-          <span className='hide-sm'>Dashboard</span>
+        <Link to='/Home'>
+          <i className='fas fa-home' />{' '}
+          <span className='hide-sm'>Home</span>
         </Link>
       </li>
       <li>
@@ -37,7 +37,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
     <nav className='navbar bg-dark'>
       <h1>
         <Link to='/'>
-          <i className='fas fa-code' /> Lifejolt
+            Lifejolt
         </Link>
       </h1>
       {!loading && (
