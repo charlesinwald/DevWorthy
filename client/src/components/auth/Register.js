@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
+import Grid from "@material-ui/core/Grid";
 
 const Register = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -34,10 +35,11 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
   return (
     <Fragment>
-      <h1 className='large text-primary'>Sign Up</h1>
-      <p className='lead'>
-        <i className='fas fa-user' /> Create Your Account
-      </p>
+      <Grid justify='center' spacing={3} container className="loginGrid">
+        <Grid item sm={8}>
+
+      <h1 className='landing-header'>Sign Up</h1>
+
       <form className='form' onSubmit={e => onSubmit(e)}>
         <div className='form-group'>
           <input
@@ -87,8 +89,10 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         <input type='submit' className='btn btn-primary' value='Register' />
       </form>
       <p className='my-1'>
-        Already have an account? <Link to='/login'>Sign In</Link>
+        Already have an account? <Link to='/login' style={{color: "white"}}>Sign In</Link>
       </p>
+      </Grid>
+      </Grid>
     </Fragment>
   );
 };

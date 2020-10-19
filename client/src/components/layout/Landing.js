@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
-
+import '../../utils/waves.css'
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -35,7 +35,7 @@ const Landing = ({ isAuthenticated }) => {
   return (
     <section className='landing'>
         <div className='landing-inner'>
-          <h1 className='landing-header'>Lifejolt</h1>
+          <h1 className='landing-header'>DevWorthy</h1>
           <div className={classes.root}>
             <Button variant="contained" className={classes.registerButton}>
               <Link to='/register'>
@@ -47,6 +47,12 @@ const Landing = ({ isAuthenticated }) => {
               Login
             </Link>
           </Button>
+            <div className="wave-container">
+              <div className="wave wave1"></div>
+              <div className="wave wave2"></div>
+              <div className="wave wave3"></div>
+              <div className="wave wave4"></div>
+	        </div>
           </div>
         </div>
     </section>

@@ -5,6 +5,19 @@
   --light-color: #f4f4f4;
   --danger-color: #dc3545;
   --success-color: #28a745;
+  height: 100% !important;
+
+}
+
+#root {
+  height: 100% !important;
+  background-color: #D3DCDE;
+  overflow: hidden;
+}
+
+.loginGrid {
+  background-image: linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%);
+  height: 100%;
 }
 
 * {
@@ -19,6 +32,7 @@ body {
   line-height: 1.6;
   background-color: #fff;
   color: #333;
+  height: 100%;
 }
 
 a {
@@ -34,11 +48,14 @@ img {
   width: 100%;
 }
 
+
+
 /* Landing Page */
 .landing-header {
   @import url('https://fonts.googleapis.com/css2?family=B612:wght@400;700&display=swap');
   font-family: 'B612', sans-serif;
   font-size: 8rem;
+  color: white;
 }
 
 
@@ -46,11 +63,21 @@ img {
 /* Utilities */
 .container {
   /*max-width: 1100px;*/
-  /*margin: auto;*/
+  margin: auto;
   overflow: hidden;
   padding: 0 2rem;
   margin-top: 6rem;
   margin-bottom: 3rem;
+  height: 100%;
+}
+
+.dropzone {
+  width : 100%;
+  height : 20%;
+  min-height: 5rem;
+  background-color: rgba(37, 219, 247, 0.30);
+  border : 5px dashed rgba(37, 219, 247, 0.90);
+  cursor: pointer;
 }
 
 /* Text Styles*/
@@ -312,9 +339,10 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.7rem 2rem;
+  padding: 0.7rem 15%;
   position: fixed;
   z-index: 1;
+  height: 6rem;
   width: 100%;
   top: 0;
   border-bottom: solid 1px var(--primary-color);

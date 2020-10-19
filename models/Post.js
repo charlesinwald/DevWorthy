@@ -13,6 +13,11 @@ const PostSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  photo:
+      {
+        type: String,
+        default: ''
+      },
   date: {
     type: Date,
     default: Date.now

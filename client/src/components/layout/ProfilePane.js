@@ -6,6 +6,7 @@ import Spinner from "./Spinner";
 import {getCurrentUsersPosts} from '../../actions/post';
 import {makeStyles} from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -14,13 +15,14 @@ const useStyles = makeStyles((theme) => ({
         position: 'sticky',
         minHeight: '75vh',
         maxHeight: '85vh',
+        maxWidth: '20vw',
         padding: '3rem',
         borderRadius: '9%',
         overflow: 'hidden',
-        boxshadow: '0 10px 25px rgba(8, 112, 184, 0.7)',
+        boxShadow: '0 10px 25px rgba(8, 112, 184, 0.7)',
         marginBottom: '1.5rem',
         color: '#cc'
-        },
+    },
     avatar: {
         width: theme.spacing(17),
         height: theme.spacing(17),
@@ -49,20 +51,26 @@ const ProfilePane = ({
 
     return loading && posts === null ? (
         <Spinner/>
-    ) : (<Grid container sm={3} className={classes.root} boxShadow={3}>
-        <Grid item sm={12}>
-            <Avatar className={classes.avatar}><h1>{user && user.firstName[0]}</h1></Avatar>
-        </Grid>
-        <Grid item sm={12}>
-        <h2 className={classes.name}>
-            {user && user.firstName + ' ' + user.lastName}
-        </h2>
-        </Grid>
-            <ul>
-                <h4>Recent Posts: </h4>
-                {posts && posts.slice(Math.max(posts.length - 5, 0)).map(post => <li key={post._id}>{post.title} </li>)}
-            </ul>
-    </Grid>);
+    ) : (
+        <Paper className={classes.root}>
+            <Grid container justify="flex-start"  boxShadow={3}>
+                <Grid item sm={12}>
+                    <Avatar className={classes.avatar}><h1>{user && user.firstName[0]}</h1></Avatar>
+                </Grid>
+                <Grid item sm={12}>
+                    <h2 className={classes.name}>
+                        {user && user.firstName + ' ' + user.lastName}
+                    </h2>
+                </Grid>
+                <ul>
+                    <h4>Recent Posts: </h4>
+                    {posts && posts.slice(Math.max(posts.length - 5, 0)).map(post => <li
+                        key={post._id}>{post.title} </li>)}
+                </ul>
+            </Grid>
+        </Paper>
+
+    );
 };
 
 ProfilePane.propTypes = {

@@ -43,6 +43,7 @@ export const getAllPosts = () => async dispatch => {
       type: POST_ERROR,
       payload: { msg: err.response.statusText, status: err.response.status }
     });
+    console.log('GetAllPosts')
   }
 };
 
@@ -63,10 +64,10 @@ export const getPostByPostId = userId => async dispatch => {
   }
 };
 
-// Create or update post
+// Create post
 export const createPost = (
-  formData,
-  history) => async dispatch => {
+  formData) => async dispatch => {
+  console.log('createPost reached');
   try {
     const config = {
       headers: {
@@ -83,7 +84,6 @@ export const createPost = (
 
     dispatch(setAlert('Post Created', 'success'));
 
-    history.push('/Home');
   } catch (err) {
     const errors = err.response.data.errors;
 
