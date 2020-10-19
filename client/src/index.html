@@ -1,0 +1,65 @@
+ <html>
+ <head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+	<script src="https://kit.fontawesome.com/f00c14539b.js" crossorigin="anonymous"></script>
+	<title>Startpage</title>
+ </head>
+ <body>
+	<div class="container">
+		<div id="time" class="time"></div>
+		
+		<form method="GET" action="http://www.google.com/search">
+			<input name="as_q" class="search-field" autofocus>
+			<button type="submit" class="search-submit" value="" style="fill: white"></button>
+		</form>
+		
+		<div class="box">
+			<div class="box-container">
+				<div class="heading">Entertainment</div>
+				<a href="https://www.youtube.com/?gl=DE" target="_blank">
+					<div class="link" tabindex="1">Youtube</div>
+				</a>
+				<a href="https://www.reddit.com/" target="_blank">
+					<div class="link" tabindex="2">Reddit</div>
+				</a>
+			</div>
+			<div class="box-container">
+				<div class="heading">Study</div>
+				<a href="https://coursesite.lehigh.edu" target="_blank">
+					<div class="link" tabindex="5">CourseSite</div>
+				</a>
+				<a href="https://github.com/" target="_blank">
+					<div class="link" tabindex="8">Github</div>
+				</a>
+			</div>
+			<div class="box-container">
+				<div class="heading" >Code</div>	
+				<a href="localhost:8080" target="_blank">
+					<div class="link" tabindex="15">Zeppelin</div>
+				</a>
+			</div>
+			<div class="box-container">
+				<div class="heading" >Else</div>	
+				<a href="https://amazon.com" target="_blank">
+					<div class="link" tabindex="16">Amazon</div>
+				</a>
+				<a href="https://wikipedia.org" target="_blank">
+					<div class="link" tabindex="17">Wikipedia</div>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="wave-container">
+		<div class="wave wave1"></div>
+		<div class="wave wave2"></div>
+		<div class="wave wave3"></div>
+		<div class="wave wave4"></div>
+	</div>
+	
+	<script src="script.js"></script>
+	
+ </body>
+ </html>
