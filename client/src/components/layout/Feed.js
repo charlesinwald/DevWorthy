@@ -111,7 +111,7 @@ function Post(props) {
                     <CloseIcon/>
                 </IconButton>
                 <Typography>
-                    Avatar & Header Coming Soon
+                    {props.post.title}
                 </Typography>
 
             </Toolbar>
@@ -119,6 +119,9 @@ function Post(props) {
                 <img src={props.post.photo}/>
                 {/*<CardMedia title={props.post.title} image={props.post.photo} className={props.classes.media}/>*/}
                 <a onClick={editPost}>Edit</a>
+                <Typography>
+                    {props.post.text}
+                </Typography>
             </Paper>
 
         </Dialog>
