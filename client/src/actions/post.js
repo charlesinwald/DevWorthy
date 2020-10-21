@@ -118,7 +118,7 @@ export const updatePost = (
       payload: res.data
     });
 
-    dispatch(setAlert('Post Created', 'success'));
+    dispatch(setAlert('Post Updated', 'success'));
 
   } catch (err) {
     const errors = err.response.data.errors;

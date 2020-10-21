@@ -1,27 +1,11 @@
 import Grid from "@material-ui/core/Grid";
-import {GridList, GridListTile, CircularProgress} from '@material-ui/core';
+import {CircularProgress, GridList, GridListTile} from '@material-ui/core';
 import PropTypes from "prop-types";
-import React, {BaseSyntheticEvent as e, useEffect, useReducer} from "react";
+import React, {useEffect} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {connect} from "react-redux";
 import {getAllPosts, updatePost} from "../../actions/post";
-import Spinner from "./Spinner";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from '@material-ui/icons/Close';
-import Dialog from "@material-ui/core/Dialog";
-import Slide from "@material-ui/core/Slide";
-import Toolbar from "@material-ui/core/Toolbar";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-import {Menu} from "@material-ui/icons";
-import MenuItem from "@material-ui/core/MenuItem";
-import Avatar from "@material-ui/core/Avatar";
-import TextField from "@material-ui/core/TextField";
+import Post from "../layout/Post";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -76,110 +60,13 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-
-function reducer(state, action) {
-    switch (action.type) {
-        case 'open':
-            return {open: !state.open, editing: state.editing};
-        case 'edit':
-            return {editing: !state.editing, open: true};
-        default:
-            throw new Error();
-    }
-}
-
-const initialState = {open: false, editing: false};
-
-function Post(props) {
-    const [state, dispatch] = useReducer(reducer, initialState);
-
-    Post.titleText = React.createRef();
-    Post.bodyText = React.createRef();
-
-    const handleDialogOpen = () => {
-        dispatch({type: 'open'});
-    };
-
-    const handleDialogClose = (e) => {
-        e.stopPropagation();
-        dispatch({type: 'open'});
-    };
-
-    const togglePostEditing = () => {
-        dispatch({type: 'edit'});
-    };
-
-    Post.submitUpdate = function () {
-        let title = this.titleText.current.value;
-        let text = this.bodyText.current.value;
-        console.log(title, text);
-        props.updatePost(title, text, props.post._id);
-        togglePostEditing();
-    }
-
-    return <GridListTile className={props.classes.photoTileInner}>
-
-        <img alt={props.post.title} src={props.post.photo} onClick={handleDialogOpen}/>
-        <GridListTileBar
-            titlePosition="top"
-            onClick={handleDialogOpen}
-            title={props.post.title}
-            subtitle={<span>{props.post.description}</span>}
-        />
-        <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
-            <Toolbar>
-                <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
-                    <CloseIcon/>
-                </IconButton>
-                {state.editing ?
-                    <TextField
-                        autoComplete='off'
-                        id="title"
-                        inputRef={Post.titleText}
-                        placeholder={props.post.title}
-                        variant="outlined"
-                    /> :
-                    <Typography>
-                        {props.post.title}
-                    </Typography>}
-            </Toolbar>
-            <Paper className={props.classes.card}>
-                <img src={props.post.photo}/>
-                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
-                {state.editing ? <TextField
-                        id="textarea"
-                        inputRef={Post.bodyText}
-                        placeholder="Description"
-                        multiline
-                        variant="outlined"
-                    /> :
-                    <Typography>
-                        {props.post.text}
-                    </Typography>}
-                {state.editing && <Button onClick={() => Post.submitUpdate()}>Submit</Button>}
-            </Paper>
-
-        </Dialog>
-    </GridListTile>
-}
-
-Post.propTypes = {
-    post: PropTypes.any,
-    classes: PropTypes.any,
-    onClick: PropTypes.func,
-    open: PropTypes.bool,
-    onClose: PropTypes.func,
-    onClick1: PropTypes.func
-};
-const Feed = ({
+const Feed  = ({
                   getAllPosts,
                   updatePost,
                   auth: {user},
-                  posts: {posts, loading}
-              }
+                  posts: {posts, loading},
+
+              },
 ) => {
 
     useEffect(() => {
@@ -201,11 +88,12 @@ const Feed = ({
                     //for actions they can't perform
                     let editable = (post.user === user._id)
                     return (
-                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post key={post._id}
+                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post
+                            //key={post._id}
                                                                                                          post={post}
                                                                                                          classes={classes}
                                                                                                          editable={editable}
-                                                                                                         updatePost={updatePost}
+                                                                                                         // updatePost={updatePost}
                                                                                                             />
                         </GridListTile>
                     );

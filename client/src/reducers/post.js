@@ -13,6 +13,11 @@ export default function(state = initialState, action) {
 
 	switch (type) {
 		case GET_POST:
+			return {
+				...state,
+				post: payload,
+				loading: false
+			};
 		case UPDATE_POST:
 			return {
 				...state,

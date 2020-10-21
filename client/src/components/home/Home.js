@@ -89,14 +89,17 @@ const Home = ({
                       container>
                     <Grid item>
                         <Chip color="primary"
+                              clickable
                               label={"Controversial"}/>
                     </Grid>
                     <Grid item>
                         <Chip color="primary"
+                              clickable
                               label={"Funny"}/>
                     </Grid>
                     <Grid item>
                         <Chip color="primary"
+                              clickable
                               label={"Wholesome"}/>
                     </Grid>
                 </Grid>

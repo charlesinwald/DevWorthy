@@ -80,12 +80,12 @@ router.put('/', auth, async (req, res) => {
             });
             console.log('Post: ', post)
             if (post.user.equals(userID)) {
-                let result = await Post.updateOne({_id: ObjectID(postID)}, {$set:{
+                let result = await Post.findOneAndUpdate({_id: ObjectID(postID)}, {$set:{
                     "title": req.body.title,
                     "text": req.body.text,
-                }});
-                console.log(result);
-                res.status(200).send("Update Successful");
+                }}, {new: true});
+                console.log('87',result);
+                res.status(200).send(result);
             } else {
                 return res.status(400).json({msg: 'You do not have permission to update this post.'});
             }
