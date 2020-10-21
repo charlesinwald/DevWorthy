@@ -43,6 +43,7 @@ const Post = ({
 
     Post.titleText = React.createRef();
     Post.bodyText = React.createRef();
+    Post.bodyTextTypography = React.createRef();
 
     const handleDialogOpen = () => {
         dispatch({type: 'open'});
@@ -102,7 +103,7 @@ const Post = ({
                         multiline
                         variant="outlined"
                     /> :
-                    <Typography>
+                    <Typography ref={Post.bodyTextTypography}>
                         {props.post.text}
                     </Typography>}
                 {state.editing && <Button onClick={() => Post.submitUpdate()}>Submit</Button>}
