@@ -97,3 +97,39 @@ export const createPost = (
     });
   }
 };
+
+// Update post
+export const updatePost = (
+    title, text, post_id) => async dispatch => {
+  console.log('updatePost reached');
+  console.log(title, text, post_id);
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    const body = JSON.stringify({ title, text, post_id });
+
+    const res = await axios.put('/api/post/', body, config);
+
+    dispatch({
+      type: GET_POST,
+      payload: res.data
+    });
+
+    dispatch(setAlert('Post Created', 'success'));
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};

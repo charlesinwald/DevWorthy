@@ -64,14 +64,15 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
 // @route    PUT api/pur/:post_id
 // @desc     Update a specific post
 // @access   Private
-router.put('/:post_id', auth, upload.single('photo'), async (req, res) => {
+router.put('/', auth, async (req, res) => {
+        console.log(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
         }
         let userID = req.user.id;
         console.log(userID);
-        let postID = req.body.postID;
+        let postID = req.body.post_id;
         console.log(postID);
         try {
             const post = await Post.findOne({

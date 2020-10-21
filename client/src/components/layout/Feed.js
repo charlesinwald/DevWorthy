@@ -1,10 +1,10 @@
 import Grid from "@material-ui/core/Grid";
 import {GridList, GridListTile, CircularProgress} from '@material-ui/core';
 import PropTypes from "prop-types";
-import React, {BaseSyntheticEvent as e, useEffect} from "react";
+import React, {BaseSyntheticEvent as e, useEffect, useReducer} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {connect} from "react-redux";
-import {getAllPosts} from "../../actions/post";
+import {getAllPosts, updatePost} from "../../actions/post";
 import Spinner from "./Spinner";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import IconButton from "@material-ui/core/IconButton";
@@ -80,21 +80,45 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+function reducer(state, action) {
+    switch (action.type) {
+        case 'open':
+            return {open: !state.open, editing: state.editing};
+        case 'edit':
+            return {editing: !state.editing, open: true};
+        default:
+            throw new Error();
+    }
+}
+
+const initialState = {open: false, editing: false};
 
 function Post(props) {
-    const [open, setOpen] = React.useState(false);
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    Post.titleText = React.createRef();
+    Post.bodyText = React.createRef();
 
     const handleDialogOpen = () => {
-        setOpen(true);
+        dispatch({type: 'open'});
     };
 
     const handleDialogClose = (e) => {
         e.stopPropagation();
-        setOpen(false);
+        dispatch({type: 'open'});
     };
 
-    const editPost = () => {
+    const togglePostEditing = () => {
+        dispatch({type: 'edit'});
     };
+
+    Post.submitUpdate = function () {
+        let title = this.titleText.current.value;
+        let text = this.bodyText.current.value;
+        console.log(title, text);
+        props.updatePost(title, text, props.post._id);
+        togglePostEditing();
+    }
 
     return <GridListTile className={props.classes.photoTileInner}>
 
@@ -105,23 +129,37 @@ function Post(props) {
             title={props.post.title}
             subtitle={<span>{props.post.description}</span>}
         />
-        <Dialog fullScreen open={open} onClose={handleDialogClose} TransitionComponent={Transition}>
+        <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
                     <CloseIcon/>
                 </IconButton>
-                <Typography>
-                    {props.post.title}
-                </Typography>
-
+                {state.editing ?
+                    <TextField
+                        autoComplete='off'
+                        id="title"
+                        inputRef={Post.titleText}
+                        placeholder={props.post.title}
+                        variant="outlined"
+                    /> :
+                    <Typography>
+                        {props.post.title}
+                    </Typography>}
             </Toolbar>
             <Paper className={props.classes.card}>
                 <img src={props.post.photo}/>
-                {/*<CardMedia title={props.post.title} image={props.post.photo} className={props.classes.media}/>*/}
-                <a onClick={editPost}>Edit</a>
-                <Typography>
-                    {props.post.text}
-                </Typography>
+                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
+                {state.editing ? <TextField
+                        id="textarea"
+                        inputRef={Post.bodyText}
+                        placeholder="Description"
+                        multiline
+                        variant="outlined"
+                    /> :
+                    <Typography>
+                        {props.post.text}
+                    </Typography>}
+                {state.editing && <Button onClick={() => Post.submitUpdate()}>Submit</Button>}
             </Paper>
 
         </Dialog>
@@ -138,6 +176,7 @@ Post.propTypes = {
 };
 const Feed = ({
                   getAllPosts,
+                  updatePost,
                   auth: {user},
                   posts: {posts, loading}
               }
@@ -148,7 +187,6 @@ const Feed = ({
     }, [getAllPosts]);
 
 
-
     const classes = useStyles();
     return loading || (posts === null) ? (
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
@@ -157,9 +195,19 @@ const Feed = ({
             {posts && posts.map((post) => {
                 if (post.photo) {
                     console.log(post.photo, post._id)
-
+                    console.log(post.user, user._id)
+                    //Users can only edit/delete their own posts
+                    //This is also checked on the backend, but we use this so we don't show the buttons
+                    //for actions they can't perform
+                    let editable = (post.user === user._id)
                     return (
-                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post key={post._id} post={post} classes={classes} /> </GridListTile>
+                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post key={post._id}
+                                                                                                         post={post}
+                                                                                                         classes={classes}
+                                                                                                         editable={editable}
+                                                                                                         updatePost={updatePost}
+                                                                                                            />
+                        </GridListTile>
                     );
                 }
             })}
@@ -177,4 +225,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
     posts: state.post,
 });
-export default connect(mapStateToProps, {getAllPosts})(Feed);
+export default connect(mapStateToProps, {getAllPosts, updatePost})(Feed);
