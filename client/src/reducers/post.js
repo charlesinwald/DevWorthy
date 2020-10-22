@@ -1,13 +1,13 @@
 import {CLEAR_POST, GET_ALL_POSTS, GET_POST, GET_POSTS, POST_ERROR, UPDATE_POST} from "../actions/types";
-
+//At the beginning, we are loading, and we don't have data yet
 const initialState = {
 	post: null,
 	posts: [],
-	repos: [],
 	loading: true,
 	error: {}
 };
-
+//Reducers define how the central Redux store should change, when an action happens
+//For example, almost all of them say that the data is done loading after the action is dispatched
 export default function(state = initialState, action) {
 	const { type, payload } = action;
 

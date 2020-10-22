@@ -32,8 +32,10 @@ export const getAllPosts = () => async dispatch => {
   // dispatch({ type: CLEAR_POST });
 
   try {
+    //Ask backend for all the posts
     const res = await axios.get('/api/post');
-
+    //We change the state, by dispatching the get all posts action
+    //This adds all the posts to the central Redux store, and signifies that we are done loading
     dispatch({
       type: GET_ALL_POSTS,
       payload: res.data
@@ -74,7 +76,7 @@ export const createPost = (
         'Content-Type': 'application/json'
       }
     };
-
+    //Expects a form data object with the fields that the backend wants (title, photo
     const res = await axios.post('/api/post', formData, config);
 
     dispatch({

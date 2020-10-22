@@ -25,8 +25,9 @@ const theme = createMuiTheme({
     }
   },
 });
-
+//Parent of everything else
 const App = () => {
+  //Instantly load users
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);

@@ -64,8 +64,8 @@ const Feed  = ({
                   getAllPosts,
                   updatePost,
                   auth: {user},
+                  //For accessing posts from the Redux store
                   posts: {posts, loading},
-
               },
 ) => {
 
@@ -79,6 +79,7 @@ const Feed  = ({
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
     ) : (<Grid item sm className={classes.middlePane}>
         <GridList cellHeight={160} className={classes.gridList} cols={3}>
+            {/*If we have the posts, for each post, determine if editable, display photo, make clickable, etc*/}
             {posts && posts.map((post) => {
                 if (post.photo) {
                     console.log(post.photo, post._id)

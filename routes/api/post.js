@@ -125,10 +125,11 @@ router.get('/user/:user_id', async (req, res) => {
 // @access   Public
 router.get('/', async (req, res) => {
     try {
+        //Query MongoDB for all posts in the Post collection
         const post = await Post.find({});
-
+        //If there are none, respond as such
         if (!post) return res.status(400).json({msg: 'No posts found'});
-
+        //Send posts back as JSON
         res.json(post);
     } catch (err) {
         console.error(err.message);

@@ -33,14 +33,17 @@ const initialState = {open: false, editing: false};
 
 const Post = ({
                   getAllPosts,
+    //So we can update the post
                    updatePost,
                    auth: {user},
                    post: {post, loading},
                     props
               }
 ) => {
+    //We use useReducer instead of useState, so we have fine grained control over the state of the
+    //dialog being open and if the post is being edited
     const [state, dispatch] = useReducer(reducer, initialState);
-
+    //We want to be able to access the current values of the text fields
     Post.titleText = React.createRef();
     Post.bodyText = React.createRef();
     Post.bodyTextTypography = React.createRef();
@@ -59,11 +62,15 @@ const Post = ({
     };
 
     Post.submitUpdate = function () {
+        //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
         console.log(title, text);
+        //action to update the post
         updatePost(title, text, props.post._id);
+        //We are no longer editing, change the state accordingly
         togglePostEditing();
+        //Refresh the posts
         getAllPosts();
     }
 
@@ -76,11 +83,13 @@ const Post = ({
             title={props.post.title}
             subtitle={<span>{props.post.description}</span>}
         />
+        {/*This is what shows when the post has been clicked on*/}
         <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
                     <CloseIcon/>
                 </IconButton>
+                {/*If editing, input field, otherwise just text*/}
                 {state.editing ?
                     <TextField
                         autoComplete='off'
@@ -96,6 +105,7 @@ const Post = ({
             <Paper className={props.classes.card}>
                 <img src={props.post.photo}/>
                 {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
+                {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField
                         id="textarea"
                         inputRef={Post.bodyText}
