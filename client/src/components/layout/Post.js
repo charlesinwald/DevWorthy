@@ -1,6 +1,6 @@
 import React, {useReducer} from "react";
 import Slide from "@material-ui/core/Slide";
-import {getAllPosts, updatePost} from "../../actions/post";
+import {deletePost, getAllPosts, updatePost} from "../../actions/post";
 import {GridListTile} from "@material-ui/core";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
@@ -24,15 +24,18 @@ function reducer(state, action) {
             return {open: !state.open, editing: state.editing};
         case 'edit':
             return {editing: !state.editing, open: true};
+        case 'delete':
+            return {editing: false, open: false, deleting: true};
         default:
             throw new Error();
     }
 }
 
-const initialState = {open: false, editing: false};
+const initialState = {open: false, editing: false, deleting: false};
 
 const Post = ({
                   getAllPosts,
+                  deletePost,
     //So we can update the post
                    updatePost,
                    auth: {user},
@@ -61,13 +64,20 @@ const Post = ({
         dispatch({type: 'edit'});
     };
 
+    const handleDeletePost = () => {
+        dispatch({type: 'delete'});
+        deletePost(props.post)
+        //Refresh the posts
+        getAllPosts();
+    }
+
     Post.submitUpdate = function () {
         //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
         console.log(title, text);
         //action to update the post
-        updatePost(title, text, props.post._id);
+        updatePost(title, text, props.post);
         //We are no longer editing, change the state accordingly
         togglePostEditing();
         //Refresh the posts
@@ -105,6 +115,8 @@ const Post = ({
             <Paper className={props.classes.card}>
                 <img src={props.post.photo}/>
                 {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
+                {props.editable && <a onClick={handleDeletePost}>Delete</a>}
+
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField
                         id="textarea"
@@ -138,4 +150,4 @@ const mapStateToProps = (state, ownProps) => ({
     posts: state.post,
     props: ownProps
 });
-export default connect(mapStateToProps, {getAllPosts, updatePost})(Post);
+export default connect(mapStateToProps, {getAllPosts, updatePost, deletePost})(Post);

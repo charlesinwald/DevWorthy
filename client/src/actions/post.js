@@ -8,7 +8,7 @@ import {
   UPDATE_POST,
   CLEAR_POST,
   ACCOUNT_DELETED,
-  GET_REPOS, GET_ALL_POSTS
+  GET_REPOS, GET_ALL_POSTS, DELETE_POST
 } from './types';
 
 // Get current users posts
@@ -121,6 +121,44 @@ export const updatePost = (
     });
 
     dispatch(setAlert('Post Updated', 'success'));
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
+// Delete post
+export const deletePost = (
+    post) => async dispatch => {
+  console.log('deletePost reached');
+  console.log(post);
+  try {
+    // const body = JSON.stringify({ post_id });
+    //Axios DELETE is a little bit different, body and config must be one object
+    const res = await axios.delete('/api/post/', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        "post_id" : post._id
+      }
+    });
+    dispatch({
+      type: DELETE_POST,
+      payload: post
+    });
+
+    dispatch(setAlert('Post Deleted', 'success'));
+
 
   } catch (err) {
     const errors = err.response.data.errors;

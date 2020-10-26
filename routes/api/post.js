@@ -61,7 +61,7 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
 
     }
 );
-// @route    PUT api/pur/:post_id
+// @route    PUT api/post/:post_id
 // @desc     Update a specific post
 // @access   Private
 router.put('/', auth, async (req, res) => {
@@ -98,6 +98,43 @@ router.put('/', auth, async (req, res) => {
         }
     }
 );
+
+// @route    DELETE api/post/:post_id
+// @desc     Delete a specific post
+// @access   Private
+router.delete('/', auth, async (req, res) => {
+        console.log(req);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({errors: errors.array()});
+        }
+        let userID = req.user.id;
+        console.log(userID);
+        let postID = req.body.post_id;
+        console.log(postID);
+        try {
+            const post = await Post.findOne({
+                _id: postID
+            });
+            console.log('Post: ', post)
+            if (post.user.equals(userID)) {
+                let result = await Post.deleteOne({_id: ObjectID(postID)} );
+                res.status(200).send(result);
+            } else {
+                return res.status(400).json({msg: 'You do not have permission to delete this post.'});
+            }
+        } catch (err) {
+            console.error(err.message);
+            if (err.kind == 'ObjectId') {
+                return res.status(400).json({msg: 'Post not found'});
+            }
+            res.status(500).send('Server Error');
+        }
+    }
+);
+
+
+
 
 // @route    GET api/post/user/:user_id
 // @desc     Get all posts by user ID
