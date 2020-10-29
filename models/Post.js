@@ -22,7 +22,13 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  tags: [{type: String, default: ['General']}]
+  tags: [{type: String, default: ['General']}],
+  upvoters: [{type: String}],
+  downvoters: [{type: String}],
+  votes: {
+    type: Number,
+    default: 0
+  }
 });
 
 module.exports = Post = mongoose.model('post', PostSchema);

@@ -61,7 +61,7 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
 
     }
 );
-// @route    PUT api/post/:post_id
+// @route    PUT api/post/
 // @desc     Update a specific post
 // @access   Private
 router.put('/', auth, async (req, res) => {
@@ -98,6 +98,139 @@ router.put('/', auth, async (req, res) => {
         }
     }
 );
+
+// @route    POST api/post/vote
+// @desc     Vote on a post, replies with change in score
+// @access   Private
+router.post('/vote', auth, async (req, res) => {
+        //This will be used later to determine which voting list they will be added to
+        var voterType = null;
+        //Used for undoing downvote while upvoting simultaneously and vice versa
+        var counterInc = 0;
+        //Keeps track of the total change to the posts score
+        var modification = 0;
+        // console.log(req);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({errors: errors.array()});
+        }
+        console.log(req);
+        console.log(req.body);
+        let userID = req.user.id;
+        console.log(userID);
+        let postID = req.body.data.post_id;
+        console.log(postID);
+        let voteType = req.body.data.vote_type;
+        try {
+            //Vote Reversal
+            if (voteType === ""){
+                //Try reversing downvote
+                await Post.updateOne({
+                    _id: postID
+                }, {
+                    //$pull removes the element from the existing array
+                    $pull: {
+                        "downvoters": userID
+                    }
+                }, async (error, result) => {
+                    console.log(result);
+                    if(result.nModified > 0){
+                        //Votes goes up by one because we undid downvote
+                        await Post.updateOne({_id: postID},{
+                            $inc: {
+                                "votes": 1
+                            }
+                        });
+                        modification += 1;
+                    }
+                    //Reversing upvote otherwise
+                    else{
+                        await Post.updateOne({_id: postID},{
+                            $pull: {
+                                "upvoters": userID
+                            }
+                        }, async (error, result) => {
+                            console.log(result);
+                            if(result.nModified > 0){
+                                await Post.updateOne({_id: postID},{
+                                    $inc: {
+                                        "votes": -1
+                                    }
+                                });
+                                modification -= 1;
+                            }
+                        });
+                    }
+                });
+            }
+            //Upvoting
+            if (voteType === "up"){
+                voterType = "upvoters";
+                await Post.updateOne({_id: postID},{
+                    $pull: {
+                        "downvoters": userID
+                    },
+                }, (error,result) => {
+                    console.log(result);
+                    //If they were a downvoter before, we undo the downvote so we add 2
+                    if(result.nModified > 0){
+                        counterInc = 2;
+                    }
+                    //Normal upvote
+                    else{
+                        counterInc = 1;
+                    }
+                });
+            }
+            else if(voteType === "down"){
+                voterType = "downvoters";
+                await Post.updateOne({_id: postID},{
+                    $pull: {
+                        "upvoters": userID
+                    },
+                }, (error,result) => {
+                    console.log(result);
+                    //Undo upvote to downvote, so subtract 2
+                    if(result.nModified > 0){
+                        counterInc = -2;
+                    }
+                    //Normal downvote
+                    else{
+                        counterInc = -1;
+                    }
+                });
+            }
+            if(voteType !== ""){
+                await Post.updateOne({_id: postID},{
+                    $addToSet: {
+                        [voterType]: userID
+                    }
+                }, async (error,result) => {
+                    console.log(result);
+                    if(result.nModified > 0){
+                        let vote = await Post.updateOne({_id: postID},{
+                            $inc: {
+                                "votes": counterInc
+                            }
+                        });
+                        modification += modification;
+                        console.log(modification);
+                        res.send(counterInc.toString());
+                    }
+                    console.log(modification);
+                    res.send(counterInc.toString());
+                });
+            }
+        } catch (err) {
+            console.error(err.message);
+            if (err.kind == 'ObjectId') {
+                return res.status(400).json({msg: 'Post not found'});
+            }
+            res.status(500).send('Server Error');
+        }
+    }
+);
+
 
 // @route    DELETE api/post/:post_id
 // @desc     Delete a specific post

@@ -173,3 +173,42 @@ export const deletePost = (
     });
   }
 };
+
+// Delete post
+export const vote = (
+    post, vote) => async dispatch => {
+  console.log('vote reached');
+  console.log(post);
+  try {
+    // const body = JSON.stringify({ post_id });
+    //Axios DELETE is a little bit different, body and config must be one object
+    const res = await axios.post('/api/post/vote', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        "post_id" : post._id,
+        "vote_type":vote
+      }
+    });
+    // dispatch({
+    //   type: DELETE_POST,
+    //   payload: post
+    // });
+
+    dispatch(setAlert('Voted', 'success'));
+
+
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};

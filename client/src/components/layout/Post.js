@@ -1,6 +1,6 @@
 import React, {useReducer} from "react";
 import Slide from "@material-ui/core/Slide";
-import {deletePost, getAllPosts, updatePost} from "../../actions/post";
+import {deletePost, getAllPosts, updatePost, vote} from "../../actions/post";
 import {GridListTile} from "@material-ui/core";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,6 +13,8 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -38,6 +40,7 @@ const Post = ({
                   deletePost,
     //So we can update the post
                    updatePost,
+                    vote,
                    auth: {user},
                    post: {post, loading},
                     props
@@ -71,6 +74,11 @@ const Post = ({
         getAllPosts();
     }
 
+    const handleVote = (e, type) => {
+            e.stopPropagation()
+            vote(props.post, type)
+    }
+
     Post.submitUpdate = function () {
         //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
@@ -91,7 +99,18 @@ const Post = ({
             titlePosition="top"
             onClick={handleDialogOpen}
             title={props.post.title}
-            subtitle={<span>{props.post.description}</span>}
+            subtitle={<span>{props.post.text}</span>}
+            actionIcon={
+                <div>
+                    <IconButton aria-label={"Downvote"} className={props.classes.downvote} onClick={(e) => handleVote(e, "down")}>
+                        <ThumbDownAltIcon/>
+                    </IconButton>
+                    <Typography variant="h6" className={props.classes.score}>{props.post.votes}</Typography>
+                    <IconButton aria-label={"Upvote"} className={props.classes.upvote} onClick={(e) => handleVote(e, "up")}>
+                        <ThumbUpAltIcon/>
+                    </IconButton>
+                </div>
+            }
         />
         {/*This is what shows when the post has been clicked on*/}
         <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
@@ -150,4 +169,4 @@ const mapStateToProps = (state, ownProps) => ({
     posts: state.post,
     props: ownProps
 });
-export default connect(mapStateToProps, {getAllPosts, updatePost, deletePost})(Post);
+export default connect(mapStateToProps, {getAllPosts, updatePost, deletePost, vote})(Post);

@@ -57,7 +57,19 @@ const useStyles = makeStyles((theme) => ({
         height: "auto"
         // margin: "auto"
     },
-
+    score: {
+        color: "white",
+        // marginRight: "1rem",
+        display: "inline"
+    },
+    upvote: {
+        display: "inline",
+        color: "white",
+    },
+    downvote: {
+        display: "inline",
+        color: "white",
+    }
 }));
 
 const Feed  = ({
