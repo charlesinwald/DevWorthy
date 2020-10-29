@@ -3,3 +3,4 @@ config/production.json
 config/default.json
 .idea/
 .env
+.DS_

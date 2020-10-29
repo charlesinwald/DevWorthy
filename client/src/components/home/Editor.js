@@ -11,7 +11,15 @@ import {useDropzone} from 'react-dropzone'
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PublishRoundedIcon from '@material-ui/icons/PublishRounded';
 import Typography from "@material-ui/core/Typography";
+
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 const useStyles = makeStyles((theme) => ({
+    //For styling Grid layout
     root: {
         color: '#cc'
     },
@@ -30,85 +38,192 @@ const useStyles = makeStyles((theme) => ({
         margin: '1rem',
         color: "white",
         float:'right',
+    },
+    formControl: {
+        //margin: theme.spacing(1),
+        //minWidth: 120,
+        width: '65%',
+        marginTop: '1rem'
+      },
+      
+    //Image Preview
+    preview: {
+        
     }
 }));
 
+const thumbsContainer = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  };
+  
+  const thumb = {
+    //display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box'
+  };
+  
+  const thumbInner = {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  };
+  
+  const img = {
+    display: 'inline',
+    width: '90px',
+    height: '90px'
+  };
+  
 
+//For file uploads (click or drag and drop)
 function Dropzone(props) {
+    
+    
     return <div {...props.rootProps} className="dropzone">
         <PublishRoundedIcon color={"primary"} style={{ fontSize: 100, width: '100%' }}/>
         <input {...props.inputProps} />
         {
+            //dragActive is true when they are hovering a file over the box
             props.dragActive ?
                 <p style={{color: "#00525E", textAlign: "center"}}>Drop photo here...</p> :
                 <p style={{color: "#00525E", textAlign: "center"}}>Drag a photo here, or click to select one</p>
         }
     </div>;
+    
 }
 
 Dropzone.propTypes = {
     rootProps: PropTypes.any,
     inputProps: PropTypes.any,
-    dragActive: PropTypes.bool
+    dragActive: PropTypes.bool,
 };
+
+//Handles File Upload, writing title, description, and submission
 const Editor = ({
+                    //Redux actions are specified
                     createPost,
+                    //So posts list is updated once post is successfully submitted
                     getAllPosts,
+                    //We need some information about the user i.e name
                     auth: {user},
+                    //Opening and closing dialog
                     setOpen
                 }) => {
-
+    //For styling
     const classes = useStyles();
+    //For referencing the fields of the "form", i.e retrieving current values
     Editor.titleText = React.createRef();
     Editor.bodyText = React.createRef();
     Editor.photo = React.createRef();
+    Editor.category = React.createRef();
+    Editor.thumbnail = React.createRef();
+    //File is initially empty, setFiles will fill it
     const [files, setFiles] = useState([]);
-    console.log(user);
+    const [category, setCategory] = useState([]);
+    
+    
+    const handleChange = (event) => {
+      setCategory(event.target.value);
+    };
+    //Specifies functionality of dragging and dropping a file, or clicking and uploading
     const onDrop = useCallback(acceptedFiles => {
-        console.log(acceptedFiles[0]);
+        //Object URL is necessary for upload
         setFiles(acceptedFiles.map(file => Object.assign(file, {
             preview: URL.createObjectURL(file)
         })));
     }, [])
-    const {getRootProps, getInputProps, isDragActive } = useDropzone({accept: 'image/*', onDrop})
+  
+    //We specify that only images are allowed to be updated
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({accept: 'image/*', onDrop: acceptedFiles =>  {
+        setFiles(acceptedFiles.map(file => Object.assign(file, {
+            preview: URL.createObjectURL(file)
+          })));
+        }
+    })
 
-
+     //Preview image
     const photoPreview = files.map(file => (
-        <div key={file.name}>
-            <img
-                src={file.preview}
-                alt={file.name}/>
+        
+        <div style={thumb} key={file.name}>
+        <div style={thumbInner}>
+          <img
+            src={file.preview}
+            style={img}
+          />
         </div>
-    ));
+      </div>
+        ));
+       
+       
 
-
+    //We pass in setOpen so we can close dialog afterwards
     Editor.submitPost = function (setOpen) {
-        console.log('submitPost reached');
+        //We utilize the refs we defined earlier to retrieve current values
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
+        //Backend expects a FormData object, with title, text and photo
         let data = new FormData();
         data.append("title", title);
         data.append("text", text);
-        console.dir(files);
         data.append("photo", files[0]);
+        //Call action to perform POST request with data
         createPost(data);
+        //Refresh posts
         getAllPosts();
+        //Close dialog
         setOpen(false);
     }
+
+    
+    //When loading, display loading icon
+    console.log(photoPreview.files);
     return user === null ? (
         <CircularProgress/>
     ) : (<Grid item sm className={classes.root}>
+        {/*File Upload*/}
         <Dropzone rootProps={getRootProps()} inputProps={getInputProps()} dragActive={isDragActive} multiple={false}/>
+        <aside style={thumbsContainer}>
         {photoPreview}
+      </aside>
+      
+        
+        
+       
         <TextField
             className={classes.titlearea}
             autoComplete='off'
             id="title"
+            // So we can retrieve value
             inputRef={Editor.titleText}
             label="Post Title"
             placeholder="<Post Title>"
             variant="outlined"
         />
+       
+        <FormControl variant="outlined" className={classes.formControl} inputRef = {Editor.category}  >
+           <InputLabel id="demo-simple-select-outlined-label"  placeholder="<Category>">Category</InputLabel>
+           <Select
+             labelId="demo-simple-select-outlined-label"
+             id="demo-simple-select-outlined"
+             label="Category"
+             value={category}
+             onChange={handleChange}
+            >
+          <MenuItem value={10}>Jokes/meme</MenuItem>
+          <MenuItem value={20}>Info</MenuItem>
+          <MenuItem value={30}>Controversial</MenuItem>
+          <MenuItem value={40}>Random</MenuItem>
+        </Select>
+      </FormControl>
+        
         <TextField
             className={classes.textarea}
             id="textarea"
@@ -118,6 +233,7 @@ const Editor = ({
             multiline
             variant="outlined"
         />
+        {/*Display full name for accountability purposes*/}
         <Typography>Posting as {user.firstName + ' ' + user.lastName}</Typography>
         <Button className={classes.submitButton}
                 // variant="outlined"
@@ -129,12 +245,8 @@ const Editor = ({
     </Grid>);
 };
 
-Editor.propTypes = {
-    auth: PropTypes.object.isRequired,
-    createPost: PropTypes.func.isRequired,
 
-};
-
+//For accessing Redux Store indirectly
 const mapStateToProps = state => ({
     auth: state.auth,
 });

@@ -1,6 +1,6 @@
 import React, {useReducer} from "react";
 import Slide from "@material-ui/core/Slide";
-import {getAllPosts, updatePost} from "../../actions/post";
+import {deletePost, getAllPosts, updatePost, vote} from "../../actions/post";
 import {GridListTile} from "@material-ui/core";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,6 +13,8 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -24,23 +26,30 @@ function reducer(state, action) {
             return {open: !state.open, editing: state.editing};
         case 'edit':
             return {editing: !state.editing, open: true};
+        case 'delete':
+            return {editing: false, open: false, deleting: true};
         default:
             throw new Error();
     }
 }
 
-const initialState = {open: false, editing: false};
+const initialState = {open: false, editing: false, deleting: false};
 
 const Post = ({
                   getAllPosts,
+                  deletePost,
+    //So we can update the post
                    updatePost,
+                    vote,
                    auth: {user},
                    post: {post, loading},
                     props
               }
 ) => {
+    //We use useReducer instead of useState, so we have fine grained control over the state of the
+    //dialog being open and if the post is being edited
     const [state, dispatch] = useReducer(reducer, initialState);
-
+    //We want to be able to access the current values of the text fields
     Post.titleText = React.createRef();
     Post.bodyText = React.createRef();
     Post.bodyTextTypography = React.createRef();
@@ -58,12 +67,28 @@ const Post = ({
         dispatch({type: 'edit'});
     };
 
+    const handleDeletePost = () => {
+        dispatch({type: 'delete'});
+        deletePost(props.post)
+        //Refresh the posts
+        getAllPosts();
+    }
+
+    const handleVote = (e, type) => {
+            e.stopPropagation()
+            vote(props.post, type)
+    }
+
     Post.submitUpdate = function () {
+        //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
         console.log(title, text);
-        updatePost(title, text, props.post._id);
+        //action to update the post
+        updatePost(title, text, props.post);
+        //We are no longer editing, change the state accordingly
         togglePostEditing();
+        //Refresh the posts
         getAllPosts();
     }
 
@@ -74,13 +99,26 @@ const Post = ({
             titlePosition="top"
             onClick={handleDialogOpen}
             title={props.post.title}
-            subtitle={<span>{props.post.description}</span>}
+            subtitle={<span>{props.post.text}</span>}
+            actionIcon={
+                <div>
+                    <IconButton aria-label={"Downvote"} className={props.classes.downvote} onClick={(e) => handleVote(e, "down")}>
+                        <ThumbDownAltIcon className={"grow"}/>
+                    </IconButton>
+                    <Typography variant="h6" className={props.classes.score}>{props.post.votes}</Typography>
+                    <IconButton aria-label={"Upvote"} className={props.classes.upvote} onClick={(e) => handleVote(e, "up")}>
+                        <ThumbUpAltIcon className={"grow"}/>
+                    </IconButton>
+                </div>
+            }
         />
+        {/*This is what shows when the post has been clicked on*/}
         <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
                     <CloseIcon/>
                 </IconButton>
+                {/*If editing, input field, otherwise just text*/}
                 {state.editing ?
                     <TextField
                         autoComplete='off'
@@ -96,6 +134,9 @@ const Post = ({
             <Paper className={props.classes.card}>
                 <img src={props.post.photo}/>
                 {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
+                {props.editable && <a onClick={handleDeletePost}>Delete</a>}
+
+                {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField
                         id="textarea"
                         inputRef={Post.bodyText}
@@ -128,4 +169,4 @@ const mapStateToProps = (state, ownProps) => ({
     posts: state.post,
     props: ownProps
 });
-export default connect(mapStateToProps, {getAllPosts, updatePost})(Post);
+export default connect(mapStateToProps, {getAllPosts, updatePost, deletePost, vote})(Post);
