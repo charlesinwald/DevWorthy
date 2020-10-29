@@ -103,11 +103,11 @@ const Post = ({
             actionIcon={
                 <div>
                     <IconButton aria-label={"Downvote"} className={props.classes.downvote} onClick={(e) => handleVote(e, "down")}>
-                        <ThumbDownAltIcon/>
+                        <ThumbDownAltIcon className={"grow"}/>
                     </IconButton>
                     <Typography variant="h6" className={props.classes.score}>{props.post.votes}</Typography>
                     <IconButton aria-label={"Upvote"} className={props.classes.upvote} onClick={(e) => handleVote(e, "up")}>
-                        <ThumbUpAltIcon/>
+                        <ThumbUpAltIcon className={"grow"}/>
                     </IconButton>
                 </div>
             }
