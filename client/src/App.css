@@ -183,6 +183,14 @@ img {
   transform: scale(1.3);
 }
 
+.grow-small {
+  transition: all .2s ease-in-out;
+}
+
+.grow-small:hover {
+  transform: scale(1.1);
+}
+
 .badge {
   font-size: 0.8rem;
   padding: 0.1rem;

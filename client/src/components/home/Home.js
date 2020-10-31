@@ -1,23 +1,17 @@
 import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Spinner from '../layout/Spinner';
 import {getCurrentProfile} from '../../actions/profile';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import ProfilePane from "../layout/ProfilePane";
 import {makeStyles} from "@material-ui/core/styles";
 import Feed from "../layout/Feed";
 import Editor from "./Editor";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
-import {createMuiTheme} from '@material-ui/core/styles';
-import Drawer from "@material-ui/core/Drawer";
-import {List} from "@material-ui/icons";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Chip from "@material-ui/core/Chip";
+import {getAllPosts, getPostsByTag} from "../../actions/post";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -54,11 +48,16 @@ const useStyles = makeStyles((theme) => ({
     drawerContainer: {
         overflow: 'auto',
     },
+    tagBadge: {
+
+    }
 }));
 
 
 const Home = ({
                   getCurrentProfile,
+                  getPostsByTag,
+                  getAllPosts,
                   auth: {user},
                   profile: {profile, loading},
               }) => {
@@ -87,20 +86,29 @@ const Home = ({
                 <Grid direction="column"
                       sm={1}
                       container>
-                    <Grid item>
+                    <Grid className={"grow-small"} item>
                         <Chip color="primary"
+                              onClick={() => getPostsByTag("Controversial")}
                               clickable
                               label={"Controversial"}/>
                     </Grid>
-                    <Grid item>
+                    <Grid className={"grow-small"} item>
                         <Chip color="primary"
+                              onClick={() => getPostsByTag("Funny")}
                               clickable
                               label={"Funny"}/>
                     </Grid>
-                    <Grid item>
+                    <Grid className={"grow-small"} item>
                         <Chip color="primary"
+                              onClick={() => getPostsByTag("Wholesome")}
                               clickable
                               label={"Wholesome"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getAllPosts()}
+                              clickable
+                              label={"All"}/>
                     </Grid>
                 </Grid>
                 <Feed/>
@@ -134,9 +142,13 @@ Home.propTypes = {
 const mapStateToProps = state => ({
     auth: state.auth,
     profile: state.profile,
+    getPostsByTag: getPostsByTag,
+    getAllPosts: getAllPosts
 });
 
 export default connect(
 mapStateToProps,
-{getCurrentProfile}
+{getCurrentProfile,
+    getAllPosts,
+    getPostsByTag}
 )(Home);

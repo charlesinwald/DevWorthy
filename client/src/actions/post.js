@@ -49,6 +49,27 @@ export const getAllPosts = () => async dispatch => {
   }
 };
 
+// Get all posts
+export const getPostsByTag = (tag) => async dispatch => {
+  dispatch({ type: CLEAR_POST });
+  try {
+    //Ask backend for all the posts
+    let url = '/api/post?tag=' + tag;
+    const res = await axios.get(url);
+    //We change the state, by dispatching the get all posts action
+    //This adds all the posts to the central Redux store, and signifies that we are done loading
+    dispatch({
+      type: GET_ALL_POSTS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
 // Get post by ID
 export const getPostByPostId = userId => async dispatch => {
   try {

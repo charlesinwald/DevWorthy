@@ -174,6 +174,7 @@ const Editor = ({
         data.append("title", title);
         data.append("text", text);
         data.append("photo", files[0]);
+        //TODO append data as "tags", as an array i.e [Funny] or [Funny, Controversial]
         //Call action to perform POST request with data
         createPost(data);
         //Refresh posts
