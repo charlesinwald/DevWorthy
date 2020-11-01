@@ -1,4 +1,4 @@
-import {CLEAR_POST, DELETE_POST, GET_ALL_POSTS, GET_POST, GET_POSTS, POST_ERROR, UPDATE_POST} from "../actions/types";
+import {CLEAR_POST, DELETE_POST, GET_ALL_POSTS, GET_POST, GET_POSTS, POST_ERROR, UPDATE_POST, LOADING} from "../actions/types";
 //At the beginning, we are loading, and we don't have data yet
 const initialState = {
 	post: null,
@@ -25,7 +25,6 @@ export default function(state = initialState, action) {
 				loading: false
 			};
 		case DELETE_POST:
-			console.log('DELETE POST REDUCER')
 			return {
 				...state,
 				post: state.post.filter(x => x !== payload),
@@ -56,6 +55,11 @@ export default function(state = initialState, action) {
 				posts: null,
 				loading: false
 			};
+		case LOADING:
+			return {
+				...state,
+				loading: true
+			}
 		default:
 			return state;
 	}
