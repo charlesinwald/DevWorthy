@@ -3,4 +3,6 @@ config/production.json
 config/default.json
 .idea/
 .env
-.DS_
+.DS_*
+package-lock.json
+routes/api/uploads/*
