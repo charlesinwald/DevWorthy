@@ -52,10 +52,11 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '56.25%', // 16:9
     },
     card: {
-        maxWidth: "720px",
-        width: "100%",
-        height: "auto"
-        // margin: "auto"
+        // maxWidth: "720px",
+        // width: "100%",
+        height: "auto",
+        margin: "auto",
+        padding: "2rem"
     },
     score: {
         color: "white",

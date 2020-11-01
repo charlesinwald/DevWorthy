@@ -294,26 +294,6 @@ router.get('/user/:user_id', async (req, res) => {
     }
 });
 
-// @route    GET api/post/:tag
-// @desc     Get all posts from a given tag
-// @access   Public
-// router.get('/:tag', async (req, res) => {
-//     console.log(req.params.tag)
-//     try {
-//         //Query MongoDB for all posts in the Post collection
-//
-//         //If there are none, respond as such
-//         if (!post) return res.status(400).json({msg: 'No posts found'});
-//         //Send posts back as JSON
-//         res.json(post);
-//     } catch (err) {
-//         console.error(err.message);
-//         if (err.kind === 'ObjectId') {
-//             return res.status(400).json({msg: 'Post not found'});
-//         }
-//         res.status(500).send('Server Error');
-//     }
-// });
 
 // @route    GET api/post/
 // @desc     Get all posts
@@ -326,13 +306,23 @@ router.get('/', async (req, res) => {
             console.log(req.query.tag)
             query = {tags: req.query.tag};
         }
-        const post = await Post.find(
+        const posts = await Post.find(
             query
         );
         //If there are none, respond as such
-        if (!post) return res.status(400).json({msg: 'No posts found'});
-        //Send posts back as JSON
-        res.json(post);
+        if (!posts) return res.status(400).json({msg: 'No posts found'});
+        //Find the user's name
+        let result = []
+        for(var i in posts) {
+            //We need a deep copy here <sigh>.... because Javascript doesn't want to give us the actual object
+            //for us to work with, and turning it into a string and back does the trick
+            let post = JSON.parse(JSON.stringify(posts[i]));
+            const user = await User.findById(post.user, 'firstName lastName');
+            let names = {"firstName" : user.firstName, "lastName" : user.lastName};
+            let newpost = Object.assign(post, names);
+            result.push(newpost);
+        }
+        res.json(result);
 
     } catch (err) {
         console.error(err.message);

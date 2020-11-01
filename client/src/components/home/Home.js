@@ -124,7 +124,7 @@ const Home = ({
 
                 </Dialog>
                 <Fab color="primary" size="large" aria-label="add" variant={"extended"} onClick={handleClickOpen}
-                     className={classes.fab}>
+                     className={`${classes.fab} grow-small`}>
                     <AddIcon style={{marginRight: ".5rem"}}/>
                     New Post
                 </Fab>

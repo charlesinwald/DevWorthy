@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
     primaryColor: {
         color: '#fff',
         backgroundColor: theme.palette.primary.light,
+        cursor: "pointer"
     },
     profileCard: {
         margin: '1rem'
@@ -47,7 +48,7 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
     const authLinks = (
         <ul>
             {/*If user is true, obtain first initial via 0th index of first name property of user object*/}
-            <Avatar aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} className={classes.primaryColor}>{user && (user.firstName[0])}</Avatar>
+            <Avatar aria-controls="simple-menu" aria-haspopup="true" clickable onClick={handleClick} className={classes.primaryColor}>{user && (user.firstName[0])}</Avatar>
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
