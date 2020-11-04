@@ -88,21 +88,27 @@ const Home = ({
                       container>
                     <Grid className={"grow-small"} item>
                         <Chip color="primary"
-                              onClick={() => getPostsByTag("Controversial")}
-                              clickable
-                              label={"Controversial"}/>
-                    </Grid>
-                    <Grid className={"grow-small"} item>
-                        <Chip color="primary"
                               onClick={() => getPostsByTag("Funny")}
                               clickable
                               label={"Funny"}/>
                     </Grid>
                     <Grid className={"grow-small"} item>
                         <Chip color="primary"
-                              onClick={() => getPostsByTag("Wholesome")}
+                              onClick={() => getPostsByTag("Info")}
                               clickable
-                              label={"Wholesome"}/>
+                              label={"Info"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getPostsByTag("Controversial")}
+                              clickable
+                              label={"Controversial"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getPostsByTag("Random")}
+                              clickable
+                              label={"Random"}/>
                     </Grid>
                     <Grid className={"grow-small"} item>
                         <Chip color="primary"
