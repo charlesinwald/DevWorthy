@@ -12,6 +12,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import Chip from "@material-ui/core/Chip";
 import {getAllPosts, getPostsByTag} from "../../actions/post";
+import {isMobile} from 'react-device-detect';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +84,7 @@ const Home = ({
         <Fragment>
 
             <Grid container spacing={3} className={classes.root}>
-                <Grid direction="column"
+                <Grid direction={isMobile ? "row" : "column"}
                       sm={1}
                       container>
                     <Grid className={"grow-small"} item>

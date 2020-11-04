@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     },
     editDescription: {
         display: "block"
+    },
+    icons: {
+        cursor: "pointer"
     }
 }));
 
@@ -156,8 +159,8 @@ const Post = ({
                         {props.post.title}
                     </Typography>}
                 <img src={props.post.photo} className={classes.image}/>
-                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : <EditIcon/>}</a>}
-                {props.editable && <a onClick={handleDeletePost}><DeleteIcon/></a>}
+                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : <EditIcon className={classes.icons}/>}</a>}
+                {props.editable && <a onClick={handleDeletePost}><DeleteIcon className={classes.icons}/></a>}
 
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField

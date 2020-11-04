@@ -6,6 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {connect} from "react-redux";
 import {getAllPosts, updatePost} from "../../actions/post";
 import Post from "../layout/Post";
+import {isMobile} from 'react-device-detect';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -88,10 +89,12 @@ const Feed  = ({
 
 
     const classes = useStyles();
+    let cols = isMobile ? 1 : 3;
+    console.log(isMobile);
     return loading || (posts === null) ? (
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
     ) : (<Grid item sm className={classes.middlePane}>
-        <GridList cellHeight={160} className={classes.gridList} cols={3}>
+        <GridList cellHeight={160} className={classes.gridList} cols={cols}>
             {/*If we have the posts, for each post, determine if editable, display photo, make clickable, etc*/}
             {posts && posts.map((post) => {
                 if (post.photo) {
