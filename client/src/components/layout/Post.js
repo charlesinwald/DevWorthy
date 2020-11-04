@@ -15,6 +15,8 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import {makeStyles} from "@material-ui/core/styles";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -25,9 +27,15 @@ const useStyles = makeStyles((theme) => ({
     image: {
         margin: "auto",
         maxWidth: "580px",
+        maxHeight: "75vh",
         width: "100%",
     },
-
+    editTitle: {
+        display: "block"
+    },
+    editDescription: {
+        display: "block"
+    }
 }));
 
 function reducer(state, action) {
@@ -126,14 +134,18 @@ const Post = ({
             }
         />
         {/*This is what shows when the post has been clicked on*/}
-        <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition} >
+        <Dialog  open={state.open} onClose={handleDialogClose} TransitionComponent={Transition} >
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
                     <CloseIcon/>
                 </IconButton>
+
+            </Toolbar>
+            <Paper className={props.classes.card}>
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ?
                     <TextField
+                        className={classes.editTitle}
                         autoComplete='off'
                         id="title"
                         inputRef={Post.titleText}
@@ -143,15 +155,14 @@ const Post = ({
                     <Typography>
                         {props.post.title}
                     </Typography>}
-            </Toolbar>
-            <Paper className={props.classes.card}>
                 <img src={props.post.photo} className={classes.image}/>
-                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
-                {props.editable && <a onClick={handleDeletePost}>Delete</a>}
+                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : <EditIcon/>}</a>}
+                {props.editable && <a onClick={handleDeletePost}><DeleteIcon/></a>}
 
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField
                         id="textarea"
+                        className={classes.editDescription}
                         inputRef={Post.bodyText}
                         placeholder="Description"
                         multiline
