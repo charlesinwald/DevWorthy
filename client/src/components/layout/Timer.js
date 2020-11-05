@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import moment from "moment";
 
 const Timer = () => {
+  //TODO load in from local storage if it exists, if not set to zero
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
 
   function toggle() {
     setIsActive(!isActive);
   }
 
-  function reset() {
-    setSeconds(0);
-    setIsActive(false);
+  window.onbeforeunload = function() {
+    localStorage.setItem('elapsedTime', seconds.toString());
   }
+  // function reset() {
+  //   setSeconds(0);
+  //   setIsActive(false);
+  // }
 
   useEffect(() => {
     let interval = null;
@@ -25,19 +30,17 @@ const Timer = () => {
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
+  const prettyTime = moment.utc(seconds*1000).format('mm:ss');
+
   return (
     <div className="timer">
       <div className="time">
-        {seconds}s
+        {/*{seconds}s*/}
+        {prettyTime}
         {/* {seconds/60} : {seconds%60} */}
       </div>
       <div>
-        <button className={`button button-primary button-primary-${isActive ? 'active' : 'inactive'}`} onClick={toggle}>
-          {isActive ? 'Pause' : 'Start'}
-        </button>
-        <button className="button" onClick={reset}>
-          Reset
-        </button>
+
       </div>
     </div>
   );

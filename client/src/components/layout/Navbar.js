@@ -9,6 +9,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
+import Timer from "./Timer";
 
 const useStyles = makeStyles((theme) => ({
     primaryColor: {
@@ -64,6 +65,7 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
                     <Typography className={classes.name}>
                        {user && user.firstName + ' ' + user.lastName}
                    </Typography>
+                    <Timer/>
                     <Typography><b>31 Minutes Elapsed</b></Typography>
                     <Typography>Edit Time</Typography>
                     {/*Alert will be some type of Dialog,modal or popover in corner of screen, to something of that effect, that triggers*/}
