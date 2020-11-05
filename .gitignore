@@ -4,3 +4,4 @@ config/default.json
 .idea/
 .env
 .DS_
+package-lock.json
