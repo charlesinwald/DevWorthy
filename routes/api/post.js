@@ -37,6 +37,10 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
         }
         // console.log(req);
         let photo_path = path.join(__dirname + '/uploads/' + req.file.filename);
+        let tags = []
+        if (req.body.tags) {
+            tags = req.body.tags;
+        }
         await cloudinary.v2.uploader.upload(photo_path,
             async function (error, result) {
                 console.log(result, error);
@@ -45,6 +49,7 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
                         user: req.user.id,
                         title: req.body.title,
                         text: req.body.text,
+                        tags: tags,
                         photo: result.secure_url
                     };
                     try {
@@ -80,11 +85,13 @@ router.put('/', auth, async (req, res) => {
             });
             console.log('Post: ', post)
             if (post.user.equals(userID)) {
-                let result = await Post.findOneAndUpdate({_id: ObjectID(postID)}, {$set:{
-                    "title": req.body.title,
-                    "text": req.body.text,
-                }}, {new: true});
-                console.log('87',result);
+                let result = await Post.findOneAndUpdate({_id: ObjectID(postID)}, {
+                    $set: {
+                        "title": req.body.title,
+                        "text": req.body.text,
+                    }
+                }, {new: true});
+                console.log('87', result);
                 res.status(200).send(result);
             } else {
                 return res.status(400).json({msg: 'You do not have permission to update this post.'});
@@ -123,7 +130,7 @@ router.post('/vote', auth, async (req, res) => {
         let voteType = req.body.data.vote_type;
         try {
             //Vote Reversal
-            if (voteType === ""){
+            if (voteType === "") {
                 //Try reversing downvote
                 await Post.updateOne({
                     _id: postID
@@ -134,9 +141,9 @@ router.post('/vote', auth, async (req, res) => {
                     }
                 }, async (error, result) => {
                     console.log(result);
-                    if(result.nModified > 0){
+                    if (result.nModified > 0) {
                         //Votes goes up by one because we undid downvote
-                        await Post.updateOne({_id: postID},{
+                        await Post.updateOne({_id: postID}, {
                             $inc: {
                                 "votes": 1
                             }
@@ -144,15 +151,15 @@ router.post('/vote', auth, async (req, res) => {
                         modification += 1;
                     }
                     //Reversing upvote otherwise
-                    else{
-                        await Post.updateOne({_id: postID},{
+                    else {
+                        await Post.updateOne({_id: postID}, {
                             $pull: {
                                 "upvoters": userID
                             }
                         }, async (error, result) => {
                             console.log(result);
-                            if(result.nModified > 0){
-                                await Post.updateOne({_id: postID},{
+                            if (result.nModified > 0) {
+                                await Post.updateOne({_id: postID}, {
                                     $inc: {
                                         "votes": -1
                                     }
@@ -164,51 +171,50 @@ router.post('/vote', auth, async (req, res) => {
                 });
             }
             //Upvoting
-            if (voteType === "up"){
+            if (voteType === "up") {
                 voterType = "upvoters";
-                await Post.updateOne({_id: postID},{
+                await Post.updateOne({_id: postID}, {
                     $pull: {
                         "downvoters": userID
                     },
-                }, (error,result) => {
+                }, (error, result) => {
                     console.log(result);
                     //If they were a downvoter before, we undo the downvote so we add 2
-                    if(result.nModified > 0){
+                    if (result.nModified > 0) {
                         counterInc = 2;
                     }
                     //Normal upvote
-                    else{
+                    else {
                         counterInc = 1;
                     }
                 });
-            }
-            else if(voteType === "down"){
+            } else if (voteType === "down") {
                 voterType = "downvoters";
-                await Post.updateOne({_id: postID},{
+                await Post.updateOne({_id: postID}, {
                     $pull: {
                         "upvoters": userID
                     },
-                }, (error,result) => {
+                }, (error, result) => {
                     console.log(result);
                     //Undo upvote to downvote, so subtract 2
-                    if(result.nModified > 0){
+                    if (result.nModified > 0) {
                         counterInc = -2;
                     }
                     //Normal downvote
-                    else{
+                    else {
                         counterInc = -1;
                     }
                 });
             }
-            if(voteType !== ""){
-                await Post.updateOne({_id: postID},{
+            if (voteType !== "") {
+                await Post.updateOne({_id: postID}, {
                     $addToSet: {
                         [voterType]: userID
                     }
-                }, async (error,result) => {
+                }, async (error, result) => {
                     console.log(result);
-                    if(result.nModified > 0){
-                        let vote = await Post.updateOne({_id: postID},{
+                    if (result.nModified > 0) {
+                        let vote = await Post.updateOne({_id: postID}, {
                             $inc: {
                                 "votes": counterInc
                             }
@@ -251,7 +257,7 @@ router.delete('/', auth, async (req, res) => {
             });
             console.log('Post: ', post)
             if (post.user.equals(userID)) {
-                let result = await Post.deleteOne({_id: ObjectID(postID)} );
+                let result = await Post.deleteOne({_id: ObjectID(postID)});
                 res.status(200).send(result);
             } else {
                 return res.status(400).json({msg: 'You do not have permission to delete this post.'});
@@ -265,8 +271,6 @@ router.delete('/', auth, async (req, res) => {
         }
     }
 );
-
-
 
 
 // @route    GET api/post/user/:user_id
@@ -290,17 +294,36 @@ router.get('/user/:user_id', async (req, res) => {
     }
 });
 
+
 // @route    GET api/post/
 // @desc     Get all posts
 // @access   Public
 router.get('/', async (req, res) => {
     try {
         //Query MongoDB for all posts in the Post collection
-        const post = await Post.find({});
+        let query = {}
+        if (req.query.tag) {
+            console.log(req.query.tag)
+            query = {tags: req.query.tag};
+        }
+        const posts = await Post.find(
+            query
+        );
         //If there are none, respond as such
-        if (!post) return res.status(400).json({msg: 'No posts found'});
-        //Send posts back as JSON
-        res.json(post);
+        if (!posts) return res.status(400).json({msg: 'No posts found'});
+        //Find the user's name
+        let result = []
+        for(var i in posts) {
+            //We need a deep copy here <sigh>.... because Javascript doesn't want to give us the actual object
+            //for us to work with, and turning it into a string and back does the trick
+            let post = JSON.parse(JSON.stringify(posts[i]));
+            const user = await User.findById(post.user, 'firstName lastName');
+            let names = {"firstName" : user.firstName, "lastName" : user.lastName};
+            let newpost = Object.assign(post, names);
+            result.push(newpost);
+        }
+        res.json(result);
+
     } catch (err) {
         console.error(err.message);
         if (err.kind === 'ObjectId') {
@@ -309,5 +332,6 @@ router.get('/', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
 
 module.exports = router;

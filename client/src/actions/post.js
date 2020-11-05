@@ -7,8 +7,9 @@ import {
   POST_ERROR,
   UPDATE_POST,
   CLEAR_POST,
-  ACCOUNT_DELETED,
-  GET_REPOS, GET_ALL_POSTS, DELETE_POST
+  GET_ALL_POSTS,
+  DELETE_POST,
+  LOADING
 } from './types';
 
 // Get current users posts
@@ -33,6 +34,7 @@ export const getAllPosts = () => async dispatch => {
 
   try {
     //Ask backend for all the posts
+    dispatch({type: LOADING });
     const res = await axios.get('/api/post');
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
@@ -46,6 +48,28 @@ export const getAllPosts = () => async dispatch => {
       payload: { msg: err.response.statusText, status: err.response.status }
     });
     console.log('GetAllPosts')
+  }
+};
+
+// Get all posts
+export const getPostsByTag = (tag) => async dispatch => {
+  dispatch({ type: CLEAR_POST });
+  try {
+    dispatch({type: LOADING });
+    //Ask backend for all the posts
+    let url = '/api/post?tag=' + tag;
+    const res = await axios.get(url);
+    //We change the state, by dispatching the get all posts action
+    //This adds all the posts to the central Redux store, and signifies that we are done loading
+    dispatch({
+      type: GET_ALL_POSTS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
   }
 };
 

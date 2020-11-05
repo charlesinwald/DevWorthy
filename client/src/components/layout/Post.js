@@ -15,10 +15,31 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import {makeStyles} from "@material-ui/core/styles";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const useStyles = makeStyles((theme) => ({
+    image: {
+        margin: "auto",
+        maxWidth: "580px",
+        maxHeight: "75vh",
+        width: "100%",
+    },
+    editTitle: {
+        display: "block"
+    },
+    editDescription: {
+        display: "block"
+    },
+    icons: {
+        cursor: "pointer"
+    }
+}));
 
 function reducer(state, action) {
     switch (action.type) {
@@ -49,6 +70,9 @@ const Post = ({
     //We use useReducer instead of useState, so we have fine grained control over the state of the
     //dialog being open and if the post is being edited
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    const classes = useStyles();
+
     //We want to be able to access the current values of the text fields
     Post.titleText = React.createRef();
     Post.bodyText = React.createRef();
@@ -98,8 +122,8 @@ const Post = ({
         <GridListTileBar
             titlePosition="top"
             onClick={handleDialogOpen}
-            title={props.post.title}
-            subtitle={<span>{props.post.text}</span>}
+            title={<b>{props.post.title}</b>}
+            subtitle={<span>{props.post.firstName + ' ' + props.post.lastName}</span>}
             actionIcon={
                 <div>
                     <IconButton aria-label={"Downvote"} className={props.classes.downvote} onClick={(e) => handleVote(e, "down")}>
@@ -113,14 +137,18 @@ const Post = ({
             }
         />
         {/*This is what shows when the post has been clicked on*/}
-        <Dialog fullScreen open={state.open} onClose={handleDialogClose} TransitionComponent={Transition}>
+        <Dialog  open={state.open} onClose={handleDialogClose} TransitionComponent={Transition} >
             <Toolbar>
                 <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
                     <CloseIcon/>
                 </IconButton>
+
+            </Toolbar>
+            <Paper className={props.classes.card}>
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ?
                     <TextField
+                        className={classes.editTitle}
                         autoComplete='off'
                         id="title"
                         inputRef={Post.titleText}
@@ -130,15 +158,14 @@ const Post = ({
                     <Typography>
                         {props.post.title}
                     </Typography>}
-            </Toolbar>
-            <Paper className={props.classes.card}>
-                <img src={props.post.photo}/>
-                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : 'Edit'}</a>}
-                {props.editable && <a onClick={handleDeletePost}>Delete</a>}
+                <img src={props.post.photo} className={classes.image}/>
+                {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : <EditIcon className={classes.icons}/>}</a>}
+                {props.editable && <a onClick={handleDeletePost}><DeleteIcon className={classes.icons}/></a>}
 
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ? <TextField
                         id="textarea"
+                        className={classes.editDescription}
                         inputRef={Post.bodyText}
                         placeholder="Description"
                         multiline

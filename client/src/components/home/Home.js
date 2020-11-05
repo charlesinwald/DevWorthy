@@ -1,23 +1,18 @@
 import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Spinner from '../layout/Spinner';
 import {getCurrentProfile} from '../../actions/profile';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import ProfilePane from "../layout/ProfilePane";
 import {makeStyles} from "@material-ui/core/styles";
 import Feed from "../layout/Feed";
 import Editor from "./Editor";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
-import {createMuiTheme} from '@material-ui/core/styles';
-import Drawer from "@material-ui/core/Drawer";
-import {List} from "@material-ui/icons";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Chip from "@material-ui/core/Chip";
+import {getAllPosts, getPostsByTag} from "../../actions/post";
+import {isMobile} from 'react-device-detect';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     middlePane: {
         margin: 'auto',
-        width: '100%'
+        width: '100%',
+        paddingBottom: "5rem"
     },
     fab: {
         backgroundColor: theme.palette.primary.dark,
@@ -49,16 +45,23 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.dark
     },
     tagsDrawer: {
-        width: "auto"
+        // width: "auto",
+        position: "fixed"
     },
     drawerContainer: {
         overflow: 'auto',
     },
+    tagBadge: {
+
+    },
+
 }));
 
 
 const Home = ({
                   getCurrentProfile,
+                  getPostsByTag,
+                  getAllPosts,
                   auth: {user},
                   profile: {profile, loading},
               }) => {
@@ -84,26 +87,42 @@ const Home = ({
         <Fragment>
 
             <Grid container spacing={3} className={classes.root}>
-                <Grid direction="column"
+                <Grid direction={isMobile ? "row" : "column"}
+                      className={classes.tagsDrawer}
                       sm={1}
                       container>
-                    <Grid item>
+                    <Grid className={"grow-small"} item>
                         <Chip color="primary"
-                              clickable
-                              label={"Controversial"}/>
-                    </Grid>
-                    <Grid item>
-                        <Chip color="primary"
+                              onClick={() => getPostsByTag("Funny")}
                               clickable
                               label={"Funny"}/>
                     </Grid>
-                    <Grid item>
+                    <Grid className={"grow-small"} item>
                         <Chip color="primary"
+                              onClick={() => getPostsByTag("Info")}
                               clickable
-                              label={"Wholesome"}/>
+                              label={"Info"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getPostsByTag("Controversial")}
+                              clickable
+                              label={"Controversial"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getPostsByTag("Random")}
+                              clickable
+                              label={"Random"}/>
+                    </Grid>
+                    <Grid className={"grow-small"} item>
+                        <Chip color="primary"
+                              onClick={() => getAllPosts()}
+                              clickable
+                              label={"All"}/>
                     </Grid>
                 </Grid>
-                <Feed/>
+                <Feed />
                 <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
                     <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                         New Post
@@ -116,7 +135,7 @@ const Home = ({
 
                 </Dialog>
                 <Fab color="primary" size="large" aria-label="add" variant={"extended"} onClick={handleClickOpen}
-                     className={classes.fab}>
+                     className={`${classes.fab} grow-small`}>
                     <AddIcon style={{marginRight: ".5rem"}}/>
                     New Post
                 </Fab>
@@ -134,9 +153,13 @@ Home.propTypes = {
 const mapStateToProps = state => ({
     auth: state.auth,
     profile: state.profile,
+    getPostsByTag: getPostsByTag,
+    getAllPosts: getAllPosts
 });
 
 export default connect(
 mapStateToProps,
-{getCurrentProfile}
+{getCurrentProfile,
+    getAllPosts,
+    getPostsByTag}
 )(Home);

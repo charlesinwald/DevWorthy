@@ -127,12 +127,15 @@ const Editor = ({
     Editor.thumbnail = React.createRef();
     //File is initially empty, setFiles will fill it
     const [files, setFiles] = useState([]);
-    const [category, setCategory] = useState([]);
+    const [selectedCategoryValue,setCategory] = useState([]);
+    
+    const categories = ['Funny','Info','Controversial','Random'];
     
     
-    const handleChange = (event) => {
+    //updates the category values 
+    const handleCategoryChange = (event) => {
       setCategory(event.target.value);
-    };
+    }
     //Specifies functionality of dragging and dropping a file, or clicking and uploading
     const onDrop = useCallback(acceptedFiles => {
         //Object URL is necessary for upload
@@ -169,11 +172,17 @@ const Editor = ({
         //We utilize the refs we defined earlier to retrieve current values
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
+
         //Backend expects a FormData object, with title, text and photo
         let data = new FormData();
         data.append("title", title);
         data.append("text", text);
         data.append("photo", files[0]);
+        for(let i=0; i<selectedCategoryValue.length;i+=1)
+        {
+          data.append("tags",selectedCategoryValue[i]);
+        }
+        //TODO append data as "tags", as an array i.e [Funny] or [Funny, Controversial]
         //Call action to perform POST request with data
         createPost(data);
         //Refresh posts
@@ -184,7 +193,7 @@ const Editor = ({
 
     
     //When loading, display loading icon
-    console.log(photoPreview.files);
+    //console.log(photoPreview.files);
     return user === null ? (
         <CircularProgress/>
     ) : (<Grid item sm className={classes.root}>
@@ -208,19 +217,19 @@ const Editor = ({
             variant="outlined"
         />
        
-        <FormControl variant="outlined" className={classes.formControl} inputRef = {Editor.category}  >
+        <FormControl variant="outlined" className={classes.formControl}  >
            <InputLabel id="demo-simple-select-outlined-label"  placeholder="<Category>">Category</InputLabel>
            <Select
              labelId="demo-simple-select-outlined-label"
              id="demo-simple-select-outlined"
              label="Category"
-             value={category}
-             onChange={handleChange}
-            >
-          <MenuItem value={10}>Jokes/meme</MenuItem>
-          <MenuItem value={20}>Info</MenuItem>
-          <MenuItem value={30}>Controversial</MenuItem>
-          <MenuItem value={40}>Random</MenuItem>
+             multiple
+             value= {selectedCategoryValue}
+             onChange={handleCategoryChange}
+             >
+          {categories.map((category, index) =>
+            <MenuItem key={category} value={category} primaryText={category[index]}>{category}</MenuItem>
+          )}
         </Select>
       </FormControl>
         

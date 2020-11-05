@@ -80,6 +80,10 @@ img {
   cursor: pointer;
 }
 
+.MuiGrid-spacing-xs-3 > .MuiGrid-item {
+  /* Hacky fix for space at the bottom of the feed, please ignore this... */
+  padding-bottom: 7rem !important;
+}
 /* Text Styles*/
 .x-large {
   font-size: 4rem;
@@ -181,6 +185,14 @@ img {
 
 .grow:hover {
   transform: scale(1.3);
+}
+
+.grow-small {
+  transition: all .2s ease-in-out;
+}
+
+.grow-small:hover {
+  transform: scale(1.1);
 }
 
 .badge {
