@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     middlePane: {
         margin: 'auto',
-        width: '100%'
+        width: '100%',
+        paddingBottom: "5rem"
     },
     fab: {
         backgroundColor: theme.palette.primary.dark,
@@ -44,14 +45,16 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.dark
     },
     tagsDrawer: {
-        width: "auto"
+        // width: "auto",
+        position: "fixed"
     },
     drawerContainer: {
         overflow: 'auto',
     },
     tagBadge: {
 
-    }
+    },
+
 }));
 
 
@@ -85,6 +88,7 @@ const Home = ({
 
             <Grid container spacing={3} className={classes.root}>
                 <Grid direction={isMobile ? "row" : "column"}
+                      className={classes.tagsDrawer}
                       sm={1}
                       container>
                     <Grid className={"grow-small"} item>
@@ -118,7 +122,7 @@ const Home = ({
                               label={"All"}/>
                     </Grid>
                 </Grid>
-                <Feed/>
+                <Feed />
                 <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
                     <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                         New Post
