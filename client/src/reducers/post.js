@@ -1,4 +1,14 @@
-import {CLEAR_POST, DELETE_POST, GET_ALL_POSTS, GET_POST, GET_POSTS, POST_ERROR, UPDATE_POST, LOADING} from "../actions/types";
+import {
+	CLEAR_POST,
+	DELETE_POST,
+	GET_ALL_POSTS,
+	GET_POST,
+	GET_POSTS,
+	POST_ERROR,
+	UPDATE_POST,
+	LOADING,
+	SET_TAG
+} from "../actions/types";
 //At the beginning, we are loading, and we don't have data yet
 const initialState = {
 	post: null,
@@ -23,6 +33,11 @@ export default function(state = initialState, action) {
 				...state,
 				post: payload,
 				loading: false
+			};
+		case SET_TAG:
+			return {
+				...state,
+				tag: payload
 			};
 		case DELETE_POST:
 			return {
