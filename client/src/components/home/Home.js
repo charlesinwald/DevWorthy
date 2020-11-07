@@ -51,25 +51,25 @@ const useStyles = makeStyles((theme) => ({
     drawerContainer: {
         overflow: 'auto',
     },
-    tagBadge: {
-
+    filter: {
+        fontSize: "large",
+        fontWeight: "bolder"
     },
 
 }));
 
 
 const Home = ({
-                  getCurrentProfile,
                   getPostsByTag,
                   getAllPosts,
+                  post: {posts, loading, tag},
                   auth: {user},
-                  profile: {profile, loading},
               }) => {
 
 
     useEffect(() => {
-        getCurrentProfile(user);
-    }, [getCurrentProfile]);
+        getAllPosts();
+    }, [getAllPosts]);
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -81,7 +81,25 @@ const Home = ({
         setOpen(false);
     };
 
-    return loading && (profile === null) ? (
+    const tags = ["Funny", "Info", "Controversial", "Random"];
+    const filterChips = tags.map(filter => {
+        let selected = filter === tag;
+        return selected ? <Grid className={"grow-small"} item>
+            <Chip color="primary"
+                  className={classes.filter}
+                  onClick={() => getPostsByTag(filter)}
+                  clickable
+                  label={filter}/>
+        </Grid>
+            : <Grid className={"grow-small"} item>
+            <Chip color="default"
+                  className={classes.filter}
+                  onClick={() => getPostsByTag(filter)}
+                  clickable
+                  label={filter}/>
+        </Grid>
+    })
+    return loading && (posts === null) ? (
         <CircularProgress/>
     ) : (
         <Fragment>
@@ -91,32 +109,38 @@ const Home = ({
                       className={classes.tagsDrawer}
                       sm={1}
                       container>
+                    {filterChips}
+                    {/*<Grid className={"grow-small"} item>*/}
+                    {/*    <Chip color="primary"*/}
+                    {/*          className={classes.filter}*/}
+                    {/*          onClick={() => getPostsByTag("Funny")}*/}
+                    {/*          clickable*/}
+                    {/*          label={"Funny"}/>*/}
+                    {/*</Grid>*/}
+                    {/*<Grid className={"grow-small"} item>*/}
+                    {/*    <Chip color="primary"*/}
+                    {/*          className={classes.filter}*/}
+                    {/*          onClick={() => getPostsByTag("Info")}*/}
+                    {/*          clickable*/}
+                    {/*          label={"Info"}/>*/}
+                    {/*</Grid>*/}
+                    {/*<Grid className={"grow-small"} item>*/}
+                    {/*    <Chip color="primary"*/}
+                    {/*          className={classes.filter}*/}
+                    {/*          onClick={() => getPostsByTag("Controversial")}*/}
+                    {/*          clickable*/}
+                    {/*          label={"Controversial"}/>*/}
+                    {/*</Grid>*/}
+                    {/*<Grid className={"grow-small"} item>*/}
+                    {/*    <Chip color="primary"*/}
+                    {/*          className={classes.filter}*/}
+                    {/*          onClick={() => getPostsByTag("Random")}*/}
+                    {/*          clickable*/}
+                    {/*          label={"Random"}/>*/}
+                    {/*</Grid>*/}
                     <Grid className={"grow-small"} item>
-                        <Chip color="primary"
-                              onClick={() => getPostsByTag("Funny")}
-                              clickable
-                              label={"Funny"}/>
-                    </Grid>
-                    <Grid className={"grow-small"} item>
-                        <Chip color="primary"
-                              onClick={() => getPostsByTag("Info")}
-                              clickable
-                              label={"Info"}/>
-                    </Grid>
-                    <Grid className={"grow-small"} item>
-                        <Chip color="primary"
-                              onClick={() => getPostsByTag("Controversial")}
-                              clickable
-                              label={"Controversial"}/>
-                    </Grid>
-                    <Grid className={"grow-small"} item>
-                        <Chip color="primary"
-                              onClick={() => getPostsByTag("Random")}
-                              clickable
-                              label={"Random"}/>
-                    </Grid>
-                    <Grid className={"grow-small"} item>
-                        <Chip color="primary"
+                        <Chip color={(tag === 'All') ? "primary" : "default"}
+                              className={classes.filter}
                               onClick={() => getAllPosts()}
                               clickable
                               label={"All"}/>
@@ -152,14 +176,14 @@ Home.propTypes = {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    profile: state.profile,
+    post: state.post,
     getPostsByTag: getPostsByTag,
     getAllPosts: getAllPosts
 });
 
 export default connect(
 mapStateToProps,
-{getCurrentProfile,
+{
     getAllPosts,
     getPostsByTag}
 )(Home);

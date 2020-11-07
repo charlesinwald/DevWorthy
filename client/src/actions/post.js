@@ -9,7 +9,7 @@ import {
   CLEAR_POST,
   GET_ALL_POSTS,
   DELETE_POST,
-  LOADING
+  LOADING, SET_TAG
 } from './types';
 
 // Get current users posts
@@ -35,6 +35,10 @@ export const getAllPosts = () => async dispatch => {
   try {
     //Ask backend for all the posts
     dispatch({type: LOADING });
+    dispatch({
+      type: SET_TAG,
+      payload: 'All'
+    });
     const res = await axios.get('/api/post');
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
@@ -57,12 +61,16 @@ export const getPostsByTag = (tag) => async dispatch => {
   try {
     dispatch({type: LOADING });
     //Ask backend for all the posts
+    dispatch({
+      type: SET_TAG,
+      payload: tag
+    });
     let url = '/api/post?tag=' + tag;
     const res = await axios.get(url);
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
     dispatch({
-      type: GET_ALL_POSTS,
+      type: GET_POSTS,
       payload: res.data
     });
   } catch (err) {
