@@ -83,9 +83,6 @@ const Feed  = ({
               },
 ) => {
 
-    useEffect(() => {
-        getAllPosts()
-    }, [getAllPosts]);
 
 
     const classes = useStyles();

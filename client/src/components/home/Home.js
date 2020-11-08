@@ -68,7 +68,9 @@ const Home = ({
 
 
     useEffect(() => {
-        getAllPosts();
+        if (!tag) {
+            getAllPosts();
+        }
     }, [getAllPosts]);
 
     const classes = useStyles();
