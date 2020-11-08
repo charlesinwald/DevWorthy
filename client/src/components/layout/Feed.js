@@ -1,12 +1,14 @@
 import Grid from "@material-ui/core/Grid";
 import {CircularProgress, GridList, GridListTile} from '@material-ui/core';
 import PropTypes from "prop-types";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {connect} from "react-redux";
-import {getAllPosts, updatePost} from "../../actions/post";
+import {getAllPosts, getPostsByTag, updatePost} from "../../actions/post";
 import Post from "../layout/Post";
 import {isMobile} from 'react-device-detect';
+import useInfiniteScroll from "react-infinite-scroll-hook";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -75,44 +77,62 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Feed  = ({
-                  getAllPosts,
-                  updatePost,
-                  auth: {user},
-                  //For accessing posts from the Redux store
-                  posts: {posts, loading},
+                   getAllPosts,
+                   getPostsByTag,
+                   updatePost,
+                   auth: {user},
+                   //For accessing posts from the Redux store
+                   posts: {posts, loading, tag},
               },
 ) => {
 
 
 
     const classes = useStyles();
+    const [page, setPage] = useState(2);
+
     let cols = isMobile ? 1 : 3;
-    console.log(isMobile);
+
+     const nextPage = () =>  {
+        console.log('next');
+        setPage(page + 1);
+        console.log(page);
+        tag ? getPostsByTag(tag, page) : getPostsByTag('All', page);
+    };
+
+    const infiniteRef = useInfiniteScroll({
+        loading,
+        hasNextPage: true,
+        onLoadMore: nextPage,
+        window
+    });
+
     return loading || (posts === null) ? (
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
     ) : (<Grid item sm className={classes.middlePane}>
-        <GridList cellHeight={160} className={classes.gridList} cols={cols}>
+
+        <GridList cellHeight={160} className={classes.gridList} cols={cols}
+                  ref={infiniteRef}
+        >
+
             {/*If we have the posts, for each post, determine if editable, display photo, make clickable, etc*/}
             {posts.length > 0 && posts.map((post) => {
                 if (post.photo) {
-                    console.log(post.photo, post._id)
-                    console.log(post.user, user._id)
                     //Users can only edit/delete their own posts
                     //This is also checked on the backend, but we use this so we don't show the buttons
                     //for actions they can't perform
                     let editable = (post.user === user._id)
                     return (
                         <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post
-                            //key={post._id}
                                                                                                          post={post}
                                                                                                          classes={classes}
                                                                                                          editable={editable}
-                                                                                                         // updatePost={updatePost}
                                                                                                             />
                         </GridListTile>
                     );
                 }
             })}
+            <Button onClick={() => nextPage()}/>
         </GridList>
     </Grid>);
 }
@@ -127,4 +147,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
     posts: state.post,
 });
-export default connect(mapStateToProps, {getAllPosts, updatePost})(Feed);
+export default connect(mapStateToProps, {getAllPosts, updatePost,getPostsByTag})(Feed);

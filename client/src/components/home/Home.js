@@ -69,7 +69,7 @@ const Home = ({
 
     useEffect(() => {
         if (!tag) {
-            getAllPosts();
+            getAllPosts(1);
         }
     }, [getAllPosts]);
 
@@ -117,7 +117,7 @@ const Home = ({
                         <Chip color={(tag === 'All') ? "primary" : "default"}
                               variant={(tag === 'All') ? "default" : "outlined"}
                               className={classes.filter}
-                              onClick={() => getAllPosts()}
+                              onClick={() => getAllPosts(1)}
                               clickable
                               label={"All"}/>
                     </Grid>

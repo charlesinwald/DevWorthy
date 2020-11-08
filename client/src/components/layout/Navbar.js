@@ -54,6 +54,8 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
                 id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
+                disableEnforceFocus={true}
+                disableScrollLock={true}
                 // When True, open menu
                 open={Boolean(anchorEl)}
                 onClose={handleClose}

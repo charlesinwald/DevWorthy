@@ -7,7 +7,7 @@ import {
 	POST_ERROR,
 	UPDATE_POST,
 	LOADING,
-	SET_TAG
+	SET_TAG, GET_MORE_POSTS
 } from "../actions/types";
 //At the beginning, we are loading, and we don't have data yet
 const initialState = {
@@ -51,6 +51,15 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				posts: payload,
+				loading: false
+			};
+		case GET_MORE_POSTS:
+			// let pages = state.posts;
+			// pages.concat(payload);
+			// console.log(pages);
+			return {
+				...state,
+				posts: state.posts.concat(payload),
 				loading: false
 			};
 		case GET_ALL_POSTS:

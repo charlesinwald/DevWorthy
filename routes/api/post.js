@@ -303,9 +303,14 @@ router.get('/', async (req, res) => {
             console.log(req.query.tag)
             query = {tags: req.query.tag};
         }
+        //Pagination, with pages of 9 images at a time
+        let skips = 0;
+        if (req.query.page) {
+            skips = 9 * (req.query.page - 1)
+        }
         const posts = await Post.find(
             query
-        ).limit(9);
+        ).skip(skips).limit(9);
         //If there are none, respond as such
         if (!posts) return res.status(400).json({msg: 'No posts found'});
         //Find the user's name

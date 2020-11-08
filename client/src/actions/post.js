@@ -9,7 +9,7 @@ import {
   CLEAR_POST,
   GET_ALL_POSTS,
   DELETE_POST,
-  LOADING, SET_TAG
+  LOADING, SET_TAG, GET_MORE_POSTS
 } from './types';
 
 // Get current users posts
@@ -29,23 +29,35 @@ export const getCurrentUsersPosts = (user) => async dispatch => {
 };
 
 // Get all posts
-export const getAllPosts = () => async dispatch => {
+export const getAllPosts = (page=1) => async dispatch => {
   // dispatch({ type: CLEAR_POST });
 
   try {
     //Ask backend for all the posts
-    dispatch({type: LOADING });
+    if (page === 1) {
+      dispatch({type: LOADING });
+    }
     dispatch({
       type: SET_TAG,
       payload: 'All'
     });
-    const res = await axios.get('/api/post');
+    let url = `/api/post?page=${page}`;
+    console.log(url);
+    const res = await axios.get(url);
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
-    dispatch({
-      type: GET_ALL_POSTS,
-      payload: res.data
-    });
+    if (page === 1) {
+      dispatch({
+        type: GET_POSTS,
+        payload: res.data
+      });
+    }
+    else {
+      dispatch({
+        type: GET_MORE_POSTS,
+        payload: res.data
+      });
+    }
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -56,23 +68,38 @@ export const getAllPosts = () => async dispatch => {
 };
 
 // Get all posts
-export const getPostsByTag = (tag) => async dispatch => {
-  dispatch({ type: CLEAR_POST });
+export const getPostsByTag = (tag, page=1) => async dispatch => {
+  // dispatch({ type: CLEAR_POST });
   try {
-    dispatch({type: LOADING });
+    if (page === 1) {
+      dispatch({type: LOADING });
+    }
     //Ask backend for all the posts
     dispatch({
       type: SET_TAG,
       payload: tag
     });
-    let url = '/api/post?tag=' + tag;
+    let url = '/api/post?' + 'page=' + page;
+    if (tag && tag !== 'All') {
+      url = url + '&tag=' + tag
+    }
+    console.log(url);
     const res = await axios.get(url);
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
-    dispatch({
-      type: GET_POSTS,
-      payload: res.data
-    });
+    if (page === 1) {
+      dispatch({
+        type: GET_POSTS,
+        payload: res.data
+      });
+    }
+    else {
+      dispatch({
+        type: GET_MORE_POSTS,
+        payload: res.data
+      });
+    }
+
   } catch (err) {
     dispatch({
       type: POST_ERROR,
