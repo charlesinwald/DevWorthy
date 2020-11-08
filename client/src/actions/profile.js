@@ -92,7 +92,7 @@ export const createProfile = (
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
     }
 
     dispatch({

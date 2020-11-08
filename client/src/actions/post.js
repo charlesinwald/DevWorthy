@@ -123,7 +123,7 @@ export const createPost = (
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
     }
 
     dispatch({
@@ -159,7 +159,7 @@ export const updatePost = (
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
     }
 
     dispatch({
@@ -198,7 +198,7 @@ export const deletePost = (
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
     }
 
     dispatch({
@@ -237,7 +237,7 @@ export const vote = (
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
     }
 
     dispatch({

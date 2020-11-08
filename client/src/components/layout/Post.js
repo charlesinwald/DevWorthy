@@ -1,12 +1,11 @@
 import React, {useReducer} from "react";
 import Slide from "@material-ui/core/Slide";
 import {deletePost, getAllPosts, updatePost, vote} from "../../actions/post";
-import {DialogTitle, GridListTile} from "@material-ui/core";
+import {GridListTile} from "@material-ui/core";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
