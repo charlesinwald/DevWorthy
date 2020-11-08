@@ -95,6 +95,7 @@ const Home = ({
         </Grid>
             : <Grid className={"grow-small"} item>
             <Chip color="default"
+                  variant="outlined"
                   className={classes.filter}
                   onClick={() => getPostsByTag(filter)}
                   clickable
@@ -112,36 +113,9 @@ const Home = ({
                       sm={1}
                       container>
                     {filterChips}
-                    {/*<Grid className={"grow-small"} item>*/}
-                    {/*    <Chip color="primary"*/}
-                    {/*          className={classes.filter}*/}
-                    {/*          onClick={() => getPostsByTag("Funny")}*/}
-                    {/*          clickable*/}
-                    {/*          label={"Funny"}/>*/}
-                    {/*</Grid>*/}
-                    {/*<Grid className={"grow-small"} item>*/}
-                    {/*    <Chip color="primary"*/}
-                    {/*          className={classes.filter}*/}
-                    {/*          onClick={() => getPostsByTag("Info")}*/}
-                    {/*          clickable*/}
-                    {/*          label={"Info"}/>*/}
-                    {/*</Grid>*/}
-                    {/*<Grid className={"grow-small"} item>*/}
-                    {/*    <Chip color="primary"*/}
-                    {/*          className={classes.filter}*/}
-                    {/*          onClick={() => getPostsByTag("Controversial")}*/}
-                    {/*          clickable*/}
-                    {/*          label={"Controversial"}/>*/}
-                    {/*</Grid>*/}
-                    {/*<Grid className={"grow-small"} item>*/}
-                    {/*    <Chip color="primary"*/}
-                    {/*          className={classes.filter}*/}
-                    {/*          onClick={() => getPostsByTag("Random")}*/}
-                    {/*          clickable*/}
-                    {/*          label={"Random"}/>*/}
-                    {/*</Grid>*/}
                     <Grid className={"grow-small"} item>
                         <Chip color={(tag === 'All') ? "primary" : "default"}
+                              variant={(tag === 'All') ? "default" : "outlined"}
                               className={classes.filter}
                               onClick={() => getAllPosts()}
                               clickable

@@ -1,7 +1,7 @@
 import React, {useReducer} from "react";
 import Slide from "@material-ui/core/Slide";
 import {deletePost, getAllPosts, updatePost, vote} from "../../actions/post";
-import {GridListTile} from "@material-ui/core";
+import {DialogTitle, GridListTile} from "@material-ui/core";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import {makeStyles} from "@material-ui/core/styles";
 import moment from "moment";
+import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +40,14 @@ const useStyles = makeStyles((theme) => ({
     },
     icons: {
         cursor: "pointer"
-    }
+    },
+    closeButton: {
+        cursor: "pointer",
+        position: "relative",
+        left: "95%",
+        marginTop: '5px',
+        color: theme.palette.primary.dark
+    },
 }));
 
 function reducer(state, action) {
@@ -97,8 +105,6 @@ const Post = ({
     const handleDeletePost = () => {
         dispatch({type: 'delete'});
         deletePost(props.post)
-        //Refresh the posts
-        // getAllPosts();
     }
 
     const handleVote = (e, type) => {
@@ -142,8 +148,8 @@ const Post = ({
         {/*This is what shows when the post has been clicked on*/}
         <Dialog  open={state.open} onClose={handleDialogClose} TransitionComponent={Transition} >
             <Toolbar>
-                <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
-                    <CloseIcon/>
+                <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close" className={classes.closeButton}>
+                    <HighlightOffRoundedIcon fontSize={"large"} />
                 </IconButton>
 
             </Toolbar>
