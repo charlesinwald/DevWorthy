@@ -242,20 +242,16 @@ router.post('/vote', auth, async (req, res) => {
 // @desc     Delete a specific post
 // @access   Private
 router.delete('/', auth, async (req, res) => {
-        console.log(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
         }
         let userID = req.user.id;
-        console.log(userID);
         let postID = req.body.post_id;
-        console.log(postID);
         try {
             const post = await Post.findOne({
                 _id: postID
             });
-            console.log('Post: ', post)
             if (post.user.equals(userID)) {
                 let result = await Post.deleteOne({_id: ObjectID(postID)});
                 res.status(200).send(result);
@@ -263,6 +259,7 @@ router.delete('/', auth, async (req, res) => {
                 return res.status(400).json({msg: 'You do not have permission to delete this post.'});
             }
         } catch (err) {
+            console.log(err);
             console.error(err.message);
             if (err.kind == 'ObjectId') {
                 return res.status(400).json({msg: 'Post not found'});
@@ -308,7 +305,7 @@ router.get('/', async (req, res) => {
         }
         const posts = await Post.find(
             query
-        );
+        ).limit(9);
         //If there are none, respond as such
         if (!posts) return res.status(400).json({msg: 'No posts found'});
         //Find the user's name

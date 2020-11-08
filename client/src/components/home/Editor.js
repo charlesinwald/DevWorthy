@@ -182,7 +182,6 @@ const Editor = ({
         {
           data.append("tags",selectedCategoryValue[i]);
         }
-        //TODO append data as "tags", as an array i.e [Funny] or [Funny, Controversial]
         //Call action to perform POST request with data
         createPost(data);
         //Refresh posts

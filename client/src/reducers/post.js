@@ -13,9 +13,11 @@ export default function(state = initialState, action) {
 
 	switch (type) {
 		case GET_POST:
+			let postsList = state.posts;
+			postsList.push(payload);
 			return {
 				...state,
-				post: payload,
+				posts: postsList,
 				loading: false
 			};
 		case UPDATE_POST:
@@ -27,7 +29,7 @@ export default function(state = initialState, action) {
 		case DELETE_POST:
 			return {
 				...state,
-				post: state.post.filter(x => x !== payload),
+				posts: state.posts.filter(x => x !== payload),
 				loading: false
 			};
 		case GET_POSTS:

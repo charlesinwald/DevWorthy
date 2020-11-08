@@ -93,7 +93,7 @@ export const getPostByPostId = userId => async dispatch => {
 // Create post
 export const createPost = (
   formData) => async dispatch => {
-  console.log('createPost reached');
+  console.log(formData.toString());
   try {
     const config = {
       headers: {
@@ -111,6 +111,7 @@ export const createPost = (
     dispatch(setAlert('Post Created', 'success'));
 
   } catch (err) {
+    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
@@ -185,6 +186,7 @@ export const deletePost = (
 
 
   } catch (err) {
+    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {

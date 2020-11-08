@@ -96,7 +96,7 @@ const Feed  = ({
     ) : (<Grid item sm className={classes.middlePane}>
         <GridList cellHeight={160} className={classes.gridList} cols={cols}>
             {/*If we have the posts, for each post, determine if editable, display photo, make clickable, etc*/}
-            {posts && posts.map((post) => {
+            {posts.length > 0 && posts.map((post) => {
                 if (post.photo) {
                     console.log(post.photo, post._id)
                     console.log(post.user, user._id)

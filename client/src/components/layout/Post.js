@@ -18,7 +18,6 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import {makeStyles} from "@material-ui/core/styles";
-import moment from "moment";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -73,8 +72,6 @@ const Post = ({
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const classes = useStyles();
-    //Pretty printed timestamp
-    const prettyDate = moment(props.post.date).fromNow();
 
     //We want to be able to access the current values of the text fields
     Post.titleText = React.createRef();
@@ -98,7 +95,7 @@ const Post = ({
         dispatch({type: 'delete'});
         deletePost(props.post)
         //Refresh the posts
-        getAllPosts();
+        // getAllPosts();
     }
 
     const handleVote = (e, type) => {
@@ -162,7 +159,6 @@ const Post = ({
                         {props.post.title}
                     </Typography>}
                 <img src={props.post.photo} className={classes.image}/>
-                <Typography sm>{prettyDate}</Typography>
                 {props.editable && <a onClick={togglePostEditing}>{state.editing ? 'Cancel' : <EditIcon className={classes.icons}/>}</a>}
                 {props.editable && <a onClick={handleDeletePost}><DeleteIcon className={classes.icons}/></a>}
 
