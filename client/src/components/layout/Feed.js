@@ -1,14 +1,13 @@
 import Grid from "@material-ui/core/Grid";
 import {CircularProgress, GridList, GridListTile} from '@material-ui/core';
 import PropTypes from "prop-types";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {connect} from "react-redux";
 import {getAllPosts, getPostsByTag, updatePost} from "../../actions/post";
 import Post from "../layout/Post";
 import {isMobile} from 'react-device-detect';
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: "1100px",
         margin: "auto",
         overflowY: 'scroll',
-        // maxHeight: '70vh'
     },
+    //Scrollbar
     '@global': {
         '*::-webkit-scrollbar': {
             display: 'none'
@@ -43,27 +42,15 @@ const useStyles = makeStyles((theme) => ({
             display: 'none'
         }
     },
+    //Loading Spinner
     loading: {
         marginLeft: "auto",
         marginRight: "auto",
         marginTop: "5rem",
         color: theme.palette.primary.main
     },
-    media: {
-        height: 0,
-        // maxWidth: "60%",
-        paddingTop: '56.25%', // 16:9
-    },
-    card: {
-        // maxWidth: "720px",
-        // width: "100%",
-        height: "auto",
-        margin: "auto",
-        padding: "2rem"
-    },
     score: {
         color: "white",
-        // marginRight: "1rem",
         display: "inline"
     },
     upvote: {
@@ -76,45 +63,42 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Feed  = ({
-                   getAllPosts,
-                   getPostsByTag,
-                   updatePost,
-                   auth: {user},
-                   //For accessing posts from the Redux store
-                   posts: {posts, loading, tag},
+const Feed = ({
+                  //For infinite scrolling
+                  getPostsByTag,
+                  //For determining which posts are editable
+                  auth: {user},
+                  //For accessing posts from the Redux store
+                  posts: {posts, loading, tag},
               },
 ) => {
 
-
-
     const classes = useStyles();
+    //Due to some odd nuance of the state machine. page must start at 2 for infinite scrolling to work
+    //Not quite sure why this is...
     const [page, setPage] = useState(2);
-
+    //Single column feed on mobile
     let cols = isMobile ? 1 : 3;
 
-     const nextPage = () =>  {
-        console.log('next');
+    const nextPage = () => {
+        //load more posts
         setPage(page + 1);
-        console.log(page);
         tag ? getPostsByTag(tag, page) : getPostsByTag('All', page);
     };
 
     const infiniteRef = useInfiniteScroll({
-        loading,
-        hasNextPage: true,
-        onLoadMore: nextPage,
-        window
+        loading,  //loading state to change, using circular progress at the bottom was bugged
+        hasNextPage: true, //In theory we could return whether there are more pages from the backend
+        onLoadMore: nextPage, //call next page on scroll-past
+        window //use the page as the container
     });
-
+    //Display loading spinner for first load
     return loading || (posts === null) ? (
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
     ) : (<Grid item sm className={classes.middlePane}>
-
         <GridList cellHeight={160} className={classes.gridList} cols={cols}
-                  ref={infiniteRef}
+                  ref={infiniteRef} //For infinite scrolling
         >
-
             {/*If we have the posts, for each post, determine if editable, display photo, make clickable, etc*/}
             {posts.length > 0 && posts.map((post) => {
                 if (post.photo) {
@@ -123,16 +107,17 @@ const Feed  = ({
                     //for actions they can't perform
                     let editable = (post.user === user._id)
                     return (
-                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}><Post
-                                                                                                         post={post}
-                                                                                                         classes={classes}
-                                                                                                         editable={editable}
-                                                                                                            />
+                        <GridListTile cols={post.cols || 1} rows={2} className={classes.photoTile}>
+                            {/*Render a post object, passing in the post itself, whether or not is editable, and some styling*/}
+                            <Post
+                                post={post}
+                                classes={classes}
+                                editable={editable}
+                            />
                         </GridListTile>
                     );
                 }
             })}
-            <Button onClick={() => nextPage()}/>
         </GridList>
     </Grid>);
 }
@@ -147,4 +132,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
     posts: state.post,
 });
-export default connect(mapStateToProps, {getAllPosts, updatePost,getPostsByTag})(Feed);
+export default connect(mapStateToProps, {getAllPosts, updatePost, getPostsByTag})(Feed);
