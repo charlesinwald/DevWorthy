@@ -115,9 +115,8 @@ const Post = ({
         //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
-        console.log(title, text);
         //action to update the post
-        updatePost(title, text, props.post);
+        updatePost(title, text, props.post._id);
         //We are no longer editing, change the state accordingly
         togglePostEditing();
         //Refresh the posts

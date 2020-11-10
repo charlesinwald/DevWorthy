@@ -70,20 +70,17 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
 // @desc     Update a specific post
 // @access   Private
 router.put('/', auth, async (req, res) => {
-        console.log(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
         }
         let userID = req.user.id;
-        console.log(userID);
         let postID = req.body.post_id;
-        console.log(postID);
         try {
             const post = await Post.findOne({
                 _id: postID
             });
-            console.log('Post: ', post)
+            // console.log('Post: ', post)
             if (post.user.equals(userID)) {
                 let result = await Post.findOneAndUpdate({_id: ObjectID(postID)}, {
                     $set: {
@@ -91,7 +88,7 @@ router.put('/', auth, async (req, res) => {
                         "text": req.body.text,
                     }
                 }, {new: true});
-                console.log('87', result);
+                // console.log('87', result);
                 res.status(200).send(result);
             } else {
                 return res.status(400).json({msg: 'You do not have permission to update this post.'});
