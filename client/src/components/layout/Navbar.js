@@ -66,7 +66,6 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
                        {user && user.firstName + ' ' + user.lastName}
                    </Typography>
                     <Timer/>
-                    <Typography><b>31 Minutes Elapsed</b></Typography>
                     <Typography>Edit Time</Typography>
                     {/*Alert will be some type of Dialog,modal or popover in corner of screen, to something of that effect, that triggers*/}
                     {/*when a certain state is reached*/}
