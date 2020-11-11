@@ -14,6 +14,8 @@ import Typography from "@material-ui/core/Typography";
 
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -225,9 +227,14 @@ const Editor = ({
              multiple
              value= {selectedCategoryValue}
              onChange={handleCategoryChange}
+             renderValue={(selected) => selected.join(', ')}
              >
           {categories.map((category, index) =>
-            <MenuItem key={category} value={category} primaryText={category[index]}>{category}</MenuItem>
+            //<MenuItem key={category} value={category} primaryText={category[index]}>{category}</MenuItem>
+            <MenuItem key={category} value={category}>
+            <Checkbox checked={selectedCategoryValue.indexOf(category) > -1} />
+              <ListItemText primary={category}>{category}</ListItemText> 
+              </MenuItem>
           )}
         </Select>
       </FormControl>
