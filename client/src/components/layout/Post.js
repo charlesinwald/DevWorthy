@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '5px',
         color: theme.palette.primary.dark
     },
+    card: {
+      padding: "1rem",
+      zIndex: 99999
+    }
 }));
 
 function reducer(state, action) {
@@ -151,7 +155,7 @@ const Post = ({
                 </IconButton>
 
             </Toolbar>
-            <Paper className={props.classes.card}>
+            <Paper className={classes.card}>
                 {/*If editing, input field, otherwise just text*/}
                 {state.editing ?
                     <TextField

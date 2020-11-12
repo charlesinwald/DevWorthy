@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.dark
     },
     tagsDrawer: {
-        zIndex: 99999,
+        zIndex: 99,
         position: "fixed"
     },
     drawerContainer: {
