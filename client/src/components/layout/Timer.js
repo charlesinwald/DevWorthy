@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from "moment";
+import TextField from "@material-ui/core/TextField";
 
 const Timer = () => {
   //TODO load in from local storage if it exists, if not set to zero
@@ -10,20 +11,19 @@ const Timer = () => {
   const [seconds, setSeconds] = useState(parseInt(localStorage.getItem(today.format("DDD YYYY"))));
   const [isActive, setIsActive] = useState(true);
   localStorage.setItem('alertTime', "60");
-  function toggle() {
-    setIsActive(!isActive);
-  }
+  let savedAlertTime = parseInt(localStorage.getItem('alertTime'));
 
   window.onbeforeunload = function() {
     localStorage.setItem(today.format("DDD YYYY"), seconds.toString());
   }
 
-  // function reset() {
-  //   setSeconds(0);
-  //   setIsActive(false);
-  // }
-  
-  // constantly running to increment the timer
+
+  function triggerAlert() {
+    alert("timer reached");
+    console.log("timer reached");
+  }
+
+// constantly running to increment the timer
   useEffect(() => {
     let interval = null;
     // if the timer is active(which it always is) increment the seconds count every second
@@ -32,9 +32,8 @@ const Timer = () => {
         setSeconds(seconds => seconds + 1);
       }, 1000);
     }
-    if (seconds == parseInt(localStorage.getItem('alertTime'))){
-      alert("timer reached");
-      console.log("timer reached");
+    if (seconds === savedAlertTime){
+      triggerAlert();
     }
     return () => clearInterval(interval);
     
