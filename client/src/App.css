@@ -48,7 +48,12 @@ img {
   width: 100%;
 }
 
-
+#setLimit {
+  width: 50%;
+}
+#minutes {
+  width: 50%;
+}
 
 /* Landing Page */
 .landing-header {

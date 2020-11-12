@@ -8,6 +8,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
+import { Typography } from '@material-ui/core';
 
 
 //Transition that time alert uses
@@ -29,7 +30,9 @@ const Timer = () => {
   //Time limit alert active
   const [open, setOpen] = React.useState(false);
 
-  localStorage.setItem('alertTime', "60");
+  if(localStorage.getItem('alertTime') == null) {
+    localStorage.setItem('alertTime', "60");
+  }
   let savedAlertTime = parseInt(localStorage.getItem('alertTime'));
   //If user is leaving page or refreshing, save elapsed time, with day/year as key,
   //so it resets on their locale specific calendar day
@@ -45,10 +48,18 @@ const Timer = () => {
     setOpen(false);
   };
 
-
   function triggerAlert() {
     handleDialogOpen();
     console.log("timer reached");
+  }
+
+  //retreive the current value at any time
+  Timer.textInput = React.createRef();
+
+  Timer.setTimeLimit = function() {
+    let textInput = this.textInput.current.value;
+    console.log("set time");
+    localStorage.setItem('alertTime', (60 * parseInt(textInput)).toString())
   }
 
 // constantly running to increment the timer
@@ -72,7 +83,7 @@ const Timer = () => {
   return (
     <div className="timer">
       <div className="time">
-        {prettyTime}
+        {prettyTime} / {savedAlertTime/60}min
       </div>
       <div>
       <TextField
@@ -82,9 +93,15 @@ const Timer = () => {
             // So we can retrieve value
             inputRef={Timer.textInput}
             label="Time Limit"
-            placeholder="30:00"
+            placeholder="30"
             variant="outlined"
         />
+        <Typography id = "minutes">minutes</Typography>
+      </div>
+      <div>
+        <Button onClick={() => Timer.setTimeLimit()} color="primary">
+          Set New Limit
+        </Button>
       </div>
       {/*Dialog shown upon time limit reached*/}
       <Dialog
