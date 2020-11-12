@@ -7,7 +7,7 @@ import {
 	POST_ERROR,
 	UPDATE_POST,
 	LOADING,
-	SET_TAG
+	SET_TAG, GET_MORE_POSTS
 } from "../actions/types";
 //At the beginning, we are loading, and we don't have data yet
 const initialState = {
@@ -23,9 +23,11 @@ export default function(state = initialState, action) {
 
 	switch (type) {
 		case GET_POST:
+			let postsList = state.posts;
+			postsList.push(payload);
 			return {
 				...state,
-				post: payload,
+				posts: postsList,
 				loading: false
 			};
 		case UPDATE_POST:
@@ -42,13 +44,22 @@ export default function(state = initialState, action) {
 		case DELETE_POST:
 			return {
 				...state,
-				post: state.post.filter(x => x !== payload),
+				posts: state.posts.filter(x => x !== payload),
 				loading: false
 			};
 		case GET_POSTS:
 			return {
 				...state,
 				posts: payload,
+				loading: false
+			};
+		case GET_MORE_POSTS:
+			// let pages = state.posts;
+			// pages.concat(payload);
+			// console.log(pages);
+			return {
+				...state,
+				posts: state.posts.concat(payload),
 				loading: false
 			};
 		case GET_ALL_POSTS:

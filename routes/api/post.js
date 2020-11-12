@@ -70,20 +70,17 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
 // @desc     Update a specific post
 // @access   Private
 router.put('/', auth, async (req, res) => {
-        console.log(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
         }
         let userID = req.user.id;
-        console.log(userID);
         let postID = req.body.post_id;
-        console.log(postID);
         try {
             const post = await Post.findOne({
                 _id: postID
             });
-            console.log('Post: ', post)
+            // console.log('Post: ', post)
             if (post.user.equals(userID)) {
                 let result = await Post.findOneAndUpdate({_id: ObjectID(postID)}, {
                     $set: {
@@ -91,7 +88,7 @@ router.put('/', auth, async (req, res) => {
                         "text": req.body.text,
                     }
                 }, {new: true});
-                console.log('87', result);
+                // console.log('87', result);
                 res.status(200).send(result);
             } else {
                 return res.status(400).json({msg: 'You do not have permission to update this post.'});
@@ -242,20 +239,16 @@ router.post('/vote', auth, async (req, res) => {
 // @desc     Delete a specific post
 // @access   Private
 router.delete('/', auth, async (req, res) => {
-        console.log(req);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
         }
         let userID = req.user.id;
-        console.log(userID);
         let postID = req.body.post_id;
-        console.log(postID);
         try {
             const post = await Post.findOne({
                 _id: postID
             });
-            console.log('Post: ', post)
             if (post.user.equals(userID)) {
                 let result = await Post.deleteOne({_id: ObjectID(postID)});
                 res.status(200).send(result);
@@ -263,6 +256,7 @@ router.delete('/', auth, async (req, res) => {
                 return res.status(400).json({msg: 'You do not have permission to delete this post.'});
             }
         } catch (err) {
+            console.log(err);
             console.error(err.message);
             if (err.kind == 'ObjectId') {
                 return res.status(400).json({msg: 'Post not found'});
@@ -306,9 +300,14 @@ router.get('/', async (req, res) => {
             console.log(req.query.tag)
             query = {tags: req.query.tag};
         }
+        //Pagination, with pages of 9 images at a time
+        let skips = 0;
+        if (req.query.page) {
+            skips = 9 * (req.query.page - 1)
+        }
         const posts = await Post.find(
             query
-        );
+        ).skip(skips).limit(9);
         //If there are none, respond as such
         if (!posts) return res.status(400).json({msg: 'No posts found'});
         //Find the user's name

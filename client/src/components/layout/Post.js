@@ -6,7 +6,6 @@ import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Dialog from "@material-ui/core/Dialog";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -19,6 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import {makeStyles} from "@material-ui/core/styles";
 import moment from "moment";
+import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +39,14 @@ const useStyles = makeStyles((theme) => ({
     },
     icons: {
         cursor: "pointer"
-    }
+    },
+    closeButton: {
+        cursor: "pointer",
+        position: "relative",
+        left: "95%",
+        marginTop: '5px',
+        color: theme.palette.primary.dark
+    },
 }));
 
 function reducer(state, action) {
@@ -97,8 +104,6 @@ const Post = ({
     const handleDeletePost = () => {
         dispatch({type: 'delete'});
         deletePost(props.post)
-        //Refresh the posts
-        getAllPosts();
     }
 
     const handleVote = (e, type) => {
@@ -110,9 +115,8 @@ const Post = ({
         //Retrieve the values of the title/text fields
         let title = this.titleText.current.value;
         let text = this.bodyText.current.value;
-        console.log(title, text);
         //action to update the post
-        updatePost(title, text, props.post);
+        updatePost(title, text, props.post._id);
         //We are no longer editing, change the state accordingly
         togglePostEditing();
         //Refresh the posts
@@ -142,8 +146,8 @@ const Post = ({
         {/*This is what shows when the post has been clicked on*/}
         <Dialog  open={state.open} onClose={handleDialogClose} TransitionComponent={Transition} >
             <Toolbar>
-                <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close">
-                    <CloseIcon/>
+                <IconButton edge="start" color="inherit" onClick={handleDialogClose} aria-label="close" className={classes.closeButton}>
+                    <HighlightOffRoundedIcon fontSize={"large"} />
                 </IconButton>
 
             </Toolbar>

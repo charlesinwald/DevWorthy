@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Timer from "./Timer";
 
 const useStyles = makeStyles((theme) => ({
+    //minty color in avatar, white text, clickable
     primaryColor: {
         color: '#fff',
         backgroundColor: theme.palette.primary.light,
@@ -53,6 +54,7 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
+                // Keep mounted as DOM node, perhaps not necessary
                 keepMounted
                 // When True, open menu
                 open={Boolean(anchorEl)}
