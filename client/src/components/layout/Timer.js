@@ -65,7 +65,7 @@ const Timer = () => {
     }
     return () => clearInterval(interval);
 
-  }, [isActive, seconds]);
+  }, [isActive, savedAlertTime, seconds, triggerAlert]);
   //Pretty printed elapsed time
   const prettyTime = moment.utc(seconds*1000).format('mm:ss');
 

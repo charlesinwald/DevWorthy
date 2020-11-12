@@ -8,6 +8,7 @@ import {getAllPosts, getPostsByTag, updatePost} from "../../actions/post";
 import Post from "../layout/Post";
 import {isMobile} from 'react-device-detect';
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import {useWindowSize} from "../../utils/windowSize";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,9 +27,21 @@ const useStyles = makeStyles((theme) => ({
     },
     middlePane: {
         width: '100%',
-        maxWidth: "1100px",
+        maxWidth: "1000px",
         margin: "auto",
         overflowY: 'scroll',
+    },
+    smallMiddlePane: {
+      width: '100%',
+      maxWidth: "60vw",
+      margin: "auto",
+      overflowY: 'scroll',
+    },
+    verySmallMiddlePane: {
+      width: '100%',
+      maxWidth: "40vw",
+      margin: "auto",
+      overflowY: 'scroll',
     },
     //Scrollbar
     '@global': {
@@ -77,9 +90,21 @@ const Feed = ({
     //Due to some odd nuance of the state machine. page must start at 2 for infinite scrolling to work
     //Not quite sure why this is...
     const [page, setPage] = useState(2);
-    //Single column feed on mobile
-    let cols = isMobile ? 1 : 3;
 
+  const windowSize = useWindowSize();
+
+
+  //Single column feed on mobile
+    let cols = (isMobile)  ? 1 : 3;
+  //Some non mobile screens are still small
+    let smallScreen = windowSize.width < 1200;
+    let verySmallScreen = windowSize.width < 720;
+    if (smallScreen) {
+      cols = 2;
+      if (verySmallScreen) {
+        cols = 1;
+      }
+    }
     const nextPage = () => {
         //load more posts
         setPage(page + 1);
@@ -93,9 +118,13 @@ const Feed = ({
         window //use the page as the container
     });
     //Display loading spinner for first load
-    return loading || (posts === null) ? (
+  let middlePaneSize = smallScreen ? classes.smallMiddlePane : classes.middlePane;
+  if (verySmallScreen) {
+    middlePaneSize = classes.verySmallMiddlePane;
+  }
+  return loading || (posts === null) ? (
         <CircularProgress className={classes.loading} size={"5rem"} thickness={5}/>
-    ) : (<Grid item sm className={classes.middlePane}>
+    ) : (<Grid item sm className={middlePaneSize}>
         <GridList cellHeight={160} className={classes.gridList} cols={cols}
                   ref={infiniteRef} //For infinite scrolling
         >

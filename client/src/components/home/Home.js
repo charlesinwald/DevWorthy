@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.dark
     },
     tagsDrawer: {
-        // width: "auto",
+        zIndex: 99999,
         position: "fixed"
     },
     drawerContainer: {
@@ -82,7 +82,7 @@ const Home = ({
     const handleClose = () => {
         setOpen(false);
     };
-
+    console.log(window.innerHeight);
     const tags = ["Funny", "Info", "Controversial", "Random"];
     const filterChips = tags.map(filter => {
         let selected = filter === tag;
