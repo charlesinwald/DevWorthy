@@ -47,10 +47,10 @@ const useStyles = makeStyles((theme) => ({
         width: '65%',
         marginTop: '1rem'
       },
-      
+
     //Image Preview
     preview: {
-        
+
     }
 }));
 
@@ -59,7 +59,7 @@ const thumbsContainer = {
     flexDirection: 'row',
     flexWrap: 'wrap'
   };
-  
+
   const thumb = {
     //display: 'inline-flex',
     borderRadius: 2,
@@ -71,24 +71,24 @@ const thumbsContainer = {
     padding: 4,
     boxSizing: 'border-box'
   };
-  
+
   const thumbInner = {
     display: 'flex',
     minWidth: 0,
     overflow: 'hidden'
   };
-  
+
   const img = {
     display: 'inline',
     width: '90px',
     height: '90px'
   };
-  
+
 
 //For file uploads (click or drag and drop)
 function Dropzone(props) {
-    
-    
+
+
     return <div {...props.rootProps} className="dropzone">
         <PublishRoundedIcon color={"primary"} style={{ fontSize: 100, width: '100%' }}/>
         <input {...props.inputProps} />
@@ -99,7 +99,7 @@ function Dropzone(props) {
                 <p style={{color: "#00525E", textAlign: "center"}}>Drag a photo here, or click to select one</p>
         }
     </div>;
-    
+
 }
 
 Dropzone.propTypes = {
@@ -130,11 +130,11 @@ const Editor = ({
     //File is initially empty, setFiles will fill it
     const [files, setFiles] = useState([]);
     const [selectedCategoryValue,setCategory] = useState([]);
-    
+
     const categories = ['Funny','Info','Controversial','Random'];
-    
-    
-    //updates the category values 
+
+
+    //updates the category values
     const handleCategoryChange = (event) => {
       setCategory(event.target.value);
     }
@@ -145,7 +145,7 @@ const Editor = ({
             preview: URL.createObjectURL(file)
         })));
     }, [])
-  
+
     //We specify that only images are allowed to be updated
     const {getRootProps, getInputProps, isDragActive} = useDropzone({accept: 'image/*', onDrop: acceptedFiles =>  {
         setFiles(acceptedFiles.map(file => Object.assign(file, {
@@ -156,7 +156,7 @@ const Editor = ({
 
      //Preview image
     const photoPreview = files.map(file => (
-        
+
         <div style={thumb} key={file.name}>
         <div style={thumbInner}>
           <img
@@ -166,8 +166,8 @@ const Editor = ({
         </div>
       </div>
         ));
-       
-       
+
+
 
     //We pass in setOpen so we can close dialog afterwards
     Editor.submitPost = function (setOpen) {
@@ -192,7 +192,7 @@ const Editor = ({
         setOpen(false);
     }
 
-    
+
     //When loading, display loading icon
     //console.log(photoPreview.files);
     return user === null ? (
@@ -203,10 +203,7 @@ const Editor = ({
         <aside style={thumbsContainer}>
         {photoPreview}
       </aside>
-      
-        
-        
-       
+
         <TextField
             className={classes.titlearea}
             autoComplete='off'
@@ -217,7 +214,7 @@ const Editor = ({
             placeholder="<Post Title>"
             variant="outlined"
         />
-       
+
         <FormControl variant="outlined" className={classes.formControl}  >
            <InputLabel id="demo-simple-select-outlined-label"  placeholder="<Category>">Category</InputLabel>
            <Select
@@ -233,12 +230,12 @@ const Editor = ({
             //<MenuItem key={category} value={category} primaryText={category[index]}>{category}</MenuItem>
             <MenuItem key={category} value={category}>
             <Checkbox checked={selectedCategoryValue.indexOf(category) > -1} />
-              <ListItemText primary={category}>{category}</ListItemText> 
+              <ListItemText primary={category}>{category}</ListItemText>
               </MenuItem>
           )}
         </Select>
       </FormControl>
-        
+
         <TextField
             className={classes.textarea}
             id="textarea"
