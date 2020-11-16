@@ -67,8 +67,9 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
                     <Typography className={classes.name}>
                        {user && user.firstName + ' ' + user.lastName}
                    </Typography>
+                    {/*import Timer.js to be shown here*/}
                     <Timer/>
-                    {/*Alert will be some type of Dialog,modal or popover in corner of screen, to something of that effect, that triggers*/}
+                    {/*Alert will be some type of Dialog, modal, or popover in corner of screen, to something of that effect, that triggers*/}
                     {/*when a certain state is reached*/}
                 </Card>
                 {/*Sign out and close dialog box, as dialog would still be open otherwise*/}

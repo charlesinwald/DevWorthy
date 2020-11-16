@@ -30,9 +30,9 @@ const Timer = () => {
   const [isActive, setIsActive] = useState(true);
   //Time limit alert active
   const [open, setOpen] = React.useState(false);
-
+  // 
   if(localStorage.getItem('alertTime') == null) {
-    localStorage.setItem('alertTime', "60");
+    localStorage.setItem('alertTime', "1800");
   }
   let savedAlertTime = parseInt(localStorage.getItem('alertTime'));
   //If user is leaving page or refreshing, save elapsed time, with day/year as key,
@@ -75,15 +75,17 @@ const Timer = () => {
         setSeconds(seconds => seconds + 1);
       }, 1000);
     }
+    // when the timer hits the alert time it will trigger the alert
     if (seconds === savedAlertTime){
       triggerAlert();
     }
     return () => clearInterval(interval);
 
   }, [isActive, savedAlertTime, seconds]);
-  //Pretty printed elapsed time
+  //Pretty printed elapsed time (eg. 12:34 instead of 754sec)
   const prettyTime = moment.utc(seconds*1000).format('mm:ss');
 
+  //this file returns what will be seen on the site so that it can be used in Navbar.js
   return (
     <div className="timer">
       <div className="time">
