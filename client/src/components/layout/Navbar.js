@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
         margin: '1rem'
     },
     name: {
-        margin: '.5rem'
+        margin: '.5rem',
+        textAlign: 'center'
     },
     bigAvatar: {
         color: '#fff',
@@ -67,12 +68,12 @@ const Navbar = ({auth: {isAuthenticated, loading, user}, logout}) => {
                     <Typography className={classes.name}>
                        {user && user.firstName + ' ' + user.lastName}
                    </Typography>
-                    <Timer/>
+                    <Timer style={{justifyContent: 'center'}}/>
                     {/*Alert will be some type of Dialog,modal or popover in corner of screen, to something of that effect, that triggers*/}
                     {/*when a certain state is reached*/}
                 </Card>
                 {/*Sign out and close dialog box, as dialog would still be open otherwise*/}
-                <MenuItem onClick={() => {handleClose(); logout()}}>Sign Out</MenuItem>
+                <MenuItem onClick={() => {handleClose(); logout()}} style={{justifyContent: 'center', textAlign: 'center'}}>Sign Out</MenuItem>
             </Menu>
         </ul>
     );

@@ -8,9 +8,20 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { Typography } from '@material-ui/core';
 import InputAdornment from "@material-ui/core/InputAdornment";
+import {makeStyles} from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 
+//Styling
+const useStyles = makeStyles((theme) => ({
+  setNewTimeButton: {
+    textAlign: "center",
+  },
+  setTimeField: {
+    minWidth: '5vw',
+    maxWidth: '10vw'
+  }
+}));
 
 //Transition that time alert uses
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -18,6 +29,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Timer = () => {
+  //Styling
+  const classes = useStyles();
+
   //Their locale specific day
   const today = moment();
   //If they have not used the site today, set elapsed time to zero, save to local storage
@@ -41,22 +55,20 @@ const Timer = () => {
     localStorage.setItem(today.format("DDD YYYY"), seconds.toString());
   };
 
+
   const handleDialogOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
 
 
-
-  //retreive the current value at any time
+  //retrieve the current value at any time
   Timer.textInput = React.createRef();
-
   Timer.setTimeLimit = function() {
     let textInput = this.textInput.current.value;
-    console.log("set time");
+    //save to browser
     localStorage.setItem('alertTime', (60 * parseInt(textInput)).toString())
   }
 
@@ -84,31 +96,31 @@ const Timer = () => {
   const prettyTime = moment.utc(seconds*1000).format('mm:ss');
 
   return (
-    <div className="timer">
-      <div className="time">
+    <div className="timer" style={{justifyContent: 'center'}}>
+      <div className="time" style={{justifyContent: 'center', textAlign: 'center'}}>
         {prettyTime} / {savedAlertTime/60} minutes
       </div>
-      <div>
+      <Grid>
       <TextField
             autoComplete='off'
             // So we can retrieve value
             inputRef={Timer.textInput}
-            label="Time Limit"
+            // label="Time Limit"
             placeholder="30"
             defaultValue="30"
             type="number"
             variant="outlined"
             InputProps={{
+              className: classes.setTimeField,
               endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
             }}
-      />
+            />
+      <Button onClick={() => Timer.setTimeLimit()} color="primary" className={classes.setNewTimeButton}>
+        Set New Limit
+      </Button>
         {/*<Typography id = "minutes">minutes</Typography>*/}
-      </div>
-      <div>
-        <Button onClick={() => Timer.setTimeLimit()} color="primary">
-          Set New Limit
-        </Button>
-      </div>
+      </Grid>
+
       {/*Dialog shown upon time limit reached*/}
       <Dialog
         open={open}
@@ -125,7 +137,7 @@ const Timer = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="primary" >
             Okay
           </Button>
         </DialogActions>
