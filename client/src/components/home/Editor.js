@@ -3,7 +3,7 @@ import React, {useEffect, useCallback, useState, useMemo} from "react";
 import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 import Spinner from "../layout/Spinner";
-import {makeStyles} from "@material-ui/core/styles";
+import {makeStyles,useTheme} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {createPost, getAllPosts} from "../../actions/post";
@@ -42,18 +42,12 @@ const useStyles = makeStyles((theme) => ({
         float:'right',
     },
     formControl: {
-        //margin: theme.spacing(1),
-        //minWidth: 120,
         width: '65%',
         marginTop: '1rem'
-      },
-
-    //Image Preview
-    preview: {
-
-    }
+      }
 }));
 
+//thumbnail preview styling
 const thumbsContainer = {
     display: 'flex',
     flexDirection: 'row',
@@ -130,11 +124,11 @@ const Editor = ({
     //File is initially empty, setFiles will fill it
     const [files, setFiles] = useState([]);
     const [selectedCategoryValue,setCategory] = useState([]);
-
+    const theme = useTheme();
     const categories = ['Funny','Info','Controversial','Random'];
-
-
-    //updates the category values
+    
+    
+    //updates the category values 
     const handleCategoryChange = (event) => {
       setCategory(event.target.value);
     }
@@ -154,10 +148,9 @@ const Editor = ({
         }
     })
 
-     //Preview image
+     //Image displayed as a thumbnail underneath the dropzone
     const photoPreview = files.map(file => (
-
-        <div style={thumb} key={file.name}>
+         <div style={thumb} key={file.name}>
         <div style={thumbInner}>
           <img
             src={file.preview}
@@ -192,19 +185,20 @@ const Editor = ({
         setOpen(false);
     }
 
-
-    //When loading, display loading icon
-    //console.log(photoPreview.files);
+    
+    //When loading, display the loading icon
     return user === null ? (
         <CircularProgress/>
     ) : (<Grid item sm className={classes.root}>
         {/*File Upload*/}
         <Dropzone rootProps={getRootProps()} inputProps={getInputProps()} dragActive={isDragActive} multiple={false}/>
+       {/* Thumbnail of the uploaded image */}
         <aside style={thumbsContainer}>
         {photoPreview}
       </aside>
-
-        <TextField
+      
+      {/* Input field to enter the title of the image */}
+       <TextField
             className={classes.titlearea}
             autoComplete='off'
             id="title"
@@ -214,28 +208,40 @@ const Editor = ({
             placeholder="<Post Title>"
             variant="outlined"
         />
-
+       
+       {/* Input field to select category(s) for the image */}
         <FormControl variant="outlined" className={classes.formControl}  >
-           <InputLabel id="demo-simple-select-outlined-label"  placeholder="<Category>">Category</InputLabel>
+           <InputLabel id="select-outlined-label" >Category</InputLabel>
            <Select
-             labelId="demo-simple-select-outlined-label"
-             id="demo-simple-select-outlined"
+             labelId="select-outlined-label"
+             id="select-outlined"
              label="Category"
              multiple
              value= {selectedCategoryValue}
              onChange={handleCategoryChange}
+             MenuProps={{
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left"
+              },
+              transformOrigin: {
+                vertical: "top",
+                horizontal: "left"
+              },
+              getContentAnchorEl: null
+            }}
              renderValue={(selected) => selected.join(', ')}
              >
-          {categories.map((category, index) =>
-            //<MenuItem key={category} value={category} primaryText={category[index]}>{category}</MenuItem>
-            <MenuItem key={category} value={category}>
-            <Checkbox checked={selectedCategoryValue.indexOf(category) > -1} />
-              <ListItemText primary={category}>{category}</ListItemText>
+            {categories.map((category, index) =>
+              <MenuItem key={category} value={category} >
+                <Checkbox checked={selectedCategoryValue.indexOf(category) > -1} />
+                <ListItemText primary={category}>{category}</ListItemText> 
               </MenuItem>
           )}
         </Select>
       </FormControl>
-
+        
+        {/* Input field to enter the description */}
         <TextField
             className={classes.textarea}
             id="textarea"
