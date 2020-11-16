@@ -56,6 +56,7 @@ const Timer = () => {
   //retreive the current value at any time
   Timer.textInput = React.createRef();
 
+  //allows the user to set their own time limit
   Timer.setTimeLimit = function() {
     let textInput = this.textInput.current.value;
     console.log("set time");
