@@ -1,8 +1,7 @@
 import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getCurrentProfile} from '../../actions/profile';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, Grid} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import {makeStyles} from "@material-ui/core/styles";
@@ -36,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         bottom: theme.spacing(2),
         left: "50%"
-        // right: theme.spacing(2),
     },
     closeButton: {
         cursor: "pointer",
@@ -55,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "large",
         fontWeight: "bolder"
     },
-
 }));
 
 
@@ -71,7 +68,7 @@ const Home = ({
         if (!tag) {
             getAllPosts(1);
         }
-    }, [getAllPosts]);
+    }, [getAllPosts, tag]);
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -82,7 +79,6 @@ const Home = ({
     const handleClose = () => {
         setOpen(false);
     };
-    console.log(window.innerHeight);
     const tags = ["Funny", "Info", "Controversial", "Random"];
     const filterChips = tags.map(filter => {
         let selected = filter === tag;
@@ -101,7 +97,7 @@ const Home = ({
                   clickable
                   label={filter}/>
         </Grid>
-    })
+    });
     return loading && (posts === null) ? (
         <CircularProgress/>
     ) : (

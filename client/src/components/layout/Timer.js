@@ -9,6 +9,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { Typography } from '@material-ui/core';
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 
 //Transition that time alert uses
@@ -48,10 +49,7 @@ const Timer = () => {
     setOpen(false);
   };
 
-  function triggerAlert() {
-    handleDialogOpen();
-    console.log("timer reached");
-  }
+
 
   //retreive the current value at any time
   Timer.textInput = React.createRef();
@@ -65,6 +63,11 @@ const Timer = () => {
 
 // constantly running to increment the timer
   useEffect(() => {
+    //The firing of the alert happens in here for performance benefit due to how React hooks work
+    function triggerAlert() {
+      handleDialogOpen();
+    }
+
     let interval = null;
     // if the timer is active(which it always is) increment the seconds count every second
     if (isActive) {
@@ -77,27 +80,30 @@ const Timer = () => {
     }
     return () => clearInterval(interval);
 
-  }, [isActive, savedAlertTime, seconds, triggerAlert]);
+  }, [isActive, savedAlertTime, seconds]);
   //Pretty printed elapsed time
   const prettyTime = moment.utc(seconds*1000).format('mm:ss');
 
   return (
     <div className="timer">
       <div className="time">
-        {prettyTime} / {savedAlertTime/60}min
+        {prettyTime} / {savedAlertTime/60} minutes
       </div>
       <div>
       <TextField
-            //className={classes.titlearea}
             autoComplete='off'
-            id="setLimit"
             // So we can retrieve value
             inputRef={Timer.textInput}
             label="Time Limit"
             placeholder="30"
+            defaultValue="30"
+            type="number"
             variant="outlined"
-        />
-        <Typography id = "minutes">minutes</Typography>
+            InputProps={{
+              endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+            }}
+      />
+        {/*<Typography id = "minutes">minutes</Typography>*/}
       </div>
       <div>
         <Button onClick={() => Timer.setTimeLimit()} color="primary">
