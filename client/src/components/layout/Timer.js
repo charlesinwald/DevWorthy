@@ -30,6 +30,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Timer = () => {
+  //For styling
+  const classes = useStyles();
   //Their locale specific day
   const today = moment();
   //If they have not used the site today, set elapsed time to zero, save to local storage
