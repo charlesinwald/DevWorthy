@@ -42,7 +42,6 @@ export const getAllPosts = (page=1) => async dispatch => {
       payload: 'All'
     });
     let url = `/api/post?page=${page}`;
-    console.log(url);
     const res = await axios.get(url);
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
@@ -63,7 +62,6 @@ export const getAllPosts = (page=1) => async dispatch => {
       type: POST_ERROR,
       payload: { msg: err.response.statusText, status: err.response.status }
     });
-    console.log('GetAllPosts')
   }
 };
 
@@ -83,7 +81,6 @@ export const getPostsByTag = (tag, page=1) => async dispatch => {
     if (tag && tag !== 'All') {
       url = url + '&tag=' + tag
     }
-    console.log(url);
     const res = await axios.get(url);
     //We change the state, by dispatching the get all posts action
     //This adds all the posts to the central Redux store, and signifies that we are done loading
@@ -128,7 +125,6 @@ export const getPostByPostId = userId => async dispatch => {
 // Create post
 export const createPost = (
   formData) => async dispatch => {
-  console.log(formData.toString());
   try {
     const config = {
       headers: {
@@ -146,7 +142,6 @@ export const createPost = (
     dispatch(setAlert('Post Created', 'success'));
 
   } catch (err) {
-    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
@@ -163,8 +158,6 @@ export const createPost = (
 // Update post
 export const updatePost = (
     title, text, post_id) => async dispatch => {
-  console.log('updatePost reached');
-  console.log(title, text, post_id);
   try {
     const config = {
       headers: {
@@ -199,8 +192,6 @@ export const updatePost = (
 // Delete post
 export const deletePost = (
     post) => async dispatch => {
-  console.log('deletePost reached');
-  console.log(post);
   try {
     // const body = JSON.stringify({ post_id });
     //Axios DELETE is a little bit different, body and config must be one object
@@ -238,8 +229,6 @@ export const deletePost = (
 // Delete post
 export const vote = (
     post, vote) => async dispatch => {
-  console.log('vote reached');
-  console.log(post);
   try {
     // const body = JSON.stringify({ post_id });
     //Axios DELETE is a little bit different, body and config must be one object

@@ -3,7 +3,7 @@ import React, {useEffect, useCallback, useState, useMemo} from "react";
 import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 import Spinner from "../layout/Spinner";
-import {makeStyles,useTheme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {createPost, getAllPosts} from "../../actions/post";
@@ -19,6 +19,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import useTheme from "@material-ui/core/styles/useTheme";
 
 const useStyles = makeStyles((theme) => ({
     //For styling Grid layout
@@ -42,9 +43,16 @@ const useStyles = makeStyles((theme) => ({
         float:'right',
     },
     formControl: {
+        //margin: theme.spacing(1),
+        //minWidth: 120,
         width: '65%',
         marginTop: '1rem'
-      }
+      },
+
+    //Image Preview
+    preview: {
+
+    }
 }));
 
 //thumbnail preview styling
@@ -126,9 +134,9 @@ const Editor = ({
     const [selectedCategoryValue,setCategory] = useState([]);
     const theme = useTheme();
     const categories = ['Funny','Info','Controversial','Random'];
-    
-    
-    //updates the category values 
+
+
+    //updates the category values
     const handleCategoryChange = (event) => {
       setCategory(event.target.value);
     }
@@ -150,7 +158,8 @@ const Editor = ({
 
      //Image displayed as a thumbnail underneath the dropzone
     const photoPreview = files.map(file => (
-         <div style={thumb} key={file.name}>
+
+        <div style={thumb} key={file.name}>
         <div style={thumbInner}>
           <img
             src={file.preview}
@@ -185,18 +194,17 @@ const Editor = ({
         setOpen(false);
     }
 
-    
+
     //When loading, display the loading icon
     return user === null ? (
         <CircularProgress/>
     ) : (<Grid item sm className={classes.root}>
         {/*File Upload*/}
         <Dropzone rootProps={getRootProps()} inputProps={getInputProps()} dragActive={isDragActive} multiple={false}/>
-       {/* Thumbnail of the uploaded image */}
         <aside style={thumbsContainer}>
         {photoPreview}
       </aside>
-      
+
       {/* Input field to enter the title of the image */}
        <TextField
             className={classes.titlearea}
@@ -208,7 +216,7 @@ const Editor = ({
             placeholder="<Post Title>"
             variant="outlined"
         />
-       
+
        {/* Input field to select category(s) for the image */}
         <FormControl variant="outlined" className={classes.formControl}  >
            <InputLabel id="select-outlined-label" >Category</InputLabel>
@@ -235,12 +243,12 @@ const Editor = ({
             {categories.map((category, index) =>
               <MenuItem key={category} value={category} >
                 <Checkbox checked={selectedCategoryValue.indexOf(category) > -1} />
-                <ListItemText primary={category}>{category}</ListItemText> 
+                <ListItemText primary={category}>{category}</ListItemText>
               </MenuItem>
           )}
         </Select>
       </FormControl>
-        
+
         {/* Input field to enter the description */}
         <TextField
             className={classes.textarea}
@@ -254,7 +262,6 @@ const Editor = ({
         {/*Display full name for accountability purposes*/}
         <Typography>Posting as {user.firstName + ' ' + user.lastName}</Typography>
         <Button className={classes.submitButton}
-                // variant="outlined"
                 variant="contained"
                 color="primary"
                 onClick={() => Editor.submitPost(setOpen)}>

@@ -54,9 +54,6 @@ export default function(state = initialState, action) {
 				loading: false
 			};
 		case GET_MORE_POSTS:
-			// let pages = state.posts;
-			// pages.concat(payload);
-			// console.log(pages);
 			return {
 				...state,
 				posts: state.posts.concat(payload),

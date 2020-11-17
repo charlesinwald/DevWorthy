@@ -8,7 +8,6 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { Typography } from '@material-ui/core';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -109,7 +108,6 @@ const Timer = () => {
             autoComplete='off'
             // So we can retrieve value
             inputRef={Timer.textInput}
-            // label="Time Limit"
             placeholder="30"
             defaultValue="30"
             type="number"
@@ -122,7 +120,6 @@ const Timer = () => {
       <Button onClick={() => Timer.setTimeLimit()} color="primary" className={classes.setNewTimeButton}>
         Set New Limit
       </Button>
-        {/*<Typography id = "minutes">minutes</Typography>*/}
       </Grid>
 
       {/*Dialog shown upon time limit reached*/}
@@ -137,7 +134,7 @@ const Timer = () => {
         <DialogTitle id="alert-dialog-slide-title">Time Limit Reached</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Hey we noticed you have been on DevWorthy for <b>{(seconds / 60).toFixed(0)} minutes </b>, which is past your daily limit of <b>{(savedAlertTime /60).toFixed(0)} minutes</b>.  Perhaps you want to take a break?
+            Hey we noticed you have been on DevWorthy for <b>{(seconds / 60).toFixed(0)} minutes</b>.  Perhaps you want to take a break?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
