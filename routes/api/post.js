@@ -30,7 +30,6 @@ const User = require('../../models/User');
 // @desc     Create or update a post
 // @access   Private
 router.post('/', auth, upload.single('photo'), async (req, res) => {
-        console.log(auth);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({errors: errors.array()});
@@ -43,7 +42,6 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
         }
         await cloudinary.v2.uploader.upload(photo_path,
             async function (error, result) {
-                console.log(result, error);
                 if (result.secure_url) {
                     const postFields = {
                         user: req.user.id,
@@ -54,7 +52,12 @@ router.post('/', auth, upload.single('photo'), async (req, res) => {
                     };
                     try {
                         let post = await Post.create(postFields);
-                        res.status(201).json(post);
+                        const user = await User.findById(post.user, 'firstName lastName');
+                        let result = JSON.parse(JSON.stringify(post));
+                        let names = {"firstName" : user.firstName, "lastName" : user.lastName};
+                        let newpost = Object.assign(result, names);
+                        console.log(newpost)
+                        res.status(201).json(newpost);
                     } catch (err) {
                         console.error(err.message);
                         res.status(500).send('Server Error');
